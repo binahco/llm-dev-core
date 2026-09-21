@@ -1,4 +1,5 @@
 PY := uv run python
+PYTEST := uv run --package llm-dev-client pytest
 CHECK := scripts/check_consumers.py
 
 .PHONY: validate validate-consumer
@@ -6,6 +7,7 @@ CHECK := scripts/check_consumers.py
 validate: ## Invariantes del core: estructura, plantillas, ADR-0, sintaxis
 	bash -n scripts/compat_check.sh
 	$(PY) $(CHECK) --self
+	$(PYTEST) -q
 
 validate-consumer: ## Invariantes de un repo consumidor: make validate-consumer CONSUMER=../mi-repo
 	@test -n "$(CONSUMER)" || { echo "uso: make validate-consumer CONSUMER=<ruta>"; exit 2; }

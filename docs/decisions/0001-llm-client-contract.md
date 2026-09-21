@@ -1,8 +1,9 @@
 # Contrato mínimo — `llm-client`
 
 - **Fecha:** 2026-09-20
-- **Estado:** propuesta (se congela en la semana 2, cuando `llm-client` nazca dentro del CLI de commits)
+- **Estado:** aceptada
 - **Origen:** D4 en `ARCHITECTURE.md`
+- **Implementada en:** semana 2 (`packages/llm-client` v0.1.0, nacida dentro de `commit-cli`)
 
 Este documento es el contrato escrito contra el que se implementa la semana 2. Define la API conceptual, el schema de span (contrato público desde el día 1) y la interfaz de proveedor con backend record/replay. Los nombres son orientativos; los contratos que se congelan son los campos del span y los límites del behavior.
 
@@ -107,6 +108,21 @@ El schema del span no es lo único no-retrofitteable: también lo es poder **gra
 
 `test-kit` (sem. 5) implementa el formato de cassette; el compat check (sem. 13) lo consume.
 
+## 4bis. Anexo — transportes permitidos (sem. 2)
+
+`complete`/`stream` ofrecen el mismo contrato sobre dos transportes, ambos cubiertos por test:
+
+1. **`opencode`** (`providers/opencode_cli.py`): subproceso `opencode run --format json --model <provider/model>`.
+   Usa la sesión/configuración local de Opencode — **sin API key por llamada** — y sirve modelos free como
+   `opencode/big-pickle`. `tokens_input/output` se leen de `part.tokens` del evento `step-finish`/`step_finish`
+   (best-effort: es un agente, no un completion puro); `cost_usd` es 0 para modelos free. Cada llamada
+   spawnea un servidor: la latencia de arranque queda en el span.
+2. **`openai-compatible`** (`providers/openai_compat.py`): HTTP `POST {base}/chat/completions` con Bearer,
+   para keys HTTP (Zen/OpenAI/locales) cuando existan.
+
+La garantía de span y cassette es idéntica entre transportes (transport-agnóstica); cambiar de transporte no
+invalida tapes. Regla interna: preferir HTTP cuando haya key; este ADR no depende de ninguno de los dos.
+
 ## 5. Qué NO contrata este documento
 
 - No define formatos de cassette (sem. 5, `test-kit`).
@@ -116,7 +132,7 @@ El schema del span no es lo único no-retrofitteable: también lo es poder **gra
 
 ## 6. Criterio de aceptación del contrato (semana 2)
 
-- [ ] `uv run pytest` verde con un test de `complete` y uno de `stream` vía replay.
-- [ ] Un cassette grabado se reproduce sin API key.
-- [ ] El span emitido cumple §2 campo por campo.
-- [ ] `call_skipped` y `retry_unnecessary` se emiten correctamente en los casos forzados.
+- [x] `uv run pytest` verde con un test de `complete` y uno de `stream` vía replay.
+- [x] Un cassette grabado se reproduce sin API key (tape real de `opencode run` incluido en el repo).
+- [x] El span emitido cumple §2 campo por campo.
+- [x] `call_skipped` y `retry_unnecessary` se emiten correctamente en los casos forzados (cache hit y stream cortado tras texto válido).

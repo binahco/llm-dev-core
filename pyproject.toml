@@ -8,7 +8,11 @@ dependencies = ["PyYAML>=6.0,<7"]
 [tool.uv]
 package = false
 
-# Monorepo: los módulos viven en packages/. Cada uno es su propio paquete.
-# El workspace uv se declara cuando exista el primer módulo (sem. 2, llm-client).
-# [tool.uv.workspace]
-# members = ["packages/*"]
+[tool.uv.workspace]
+members = ["packages/*"]
+
+[dependency-groups]
+dev = ["pytest>=8,<9"]
+
+[tool.pytest.ini_options]
+testpaths = ["packages"]

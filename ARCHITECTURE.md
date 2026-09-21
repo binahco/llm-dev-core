@@ -338,10 +338,11 @@ La regla es simple: si no puedes pagar el eval de forma repetible, el eval está
 
 ## 10. Estado actual
 
-- **Versión:** v0.2 (seed revisado)
-- **Módulos existentes:** ninguno. El seed de esta semana es este documento, las plantillas de `templates/` y el enforcement base en `scripts/` (`make validate`).
-- **Listo antes de la semana 2:** ADR-0 en `docs/decisions/0000-stack.md`, contrato mínimo de `llm-client` (`0001-llm-client-contract.md`), plantilla de consumidor clonable en `templates/`.
-- **Próxima semana (sem. 2):** `llm-client` nace dentro del CLI de commits — el proyecto es la excusa, el módulo es el producto. Ya con record/replay y schema de span desde el día 1.
+- **Versión:** v0.2
+- **Módulos existentes:** `packages/llm-client` v0.1.0 (seed sem. 2) — `complete`/`stream`, retry+backoff+jitter, reparación con tope, cap de costo, cache, span de 20 campos, record/replay nativo, transportes `opencode` (sesión local sin API key) y `openai-compatible` (HTTP).
+- **Consumidores:** `Proyectos/commit-cli` (sem. 2) — CLI que propone mensajes de commit desde `git diff` mediante `llm-client`; depende editable del core.
+- **Enforcement:** ADR-0 y ADR-1 (`llm-client-contract`) en `docs/decisions/`, plantillas en `templates/`, `make validate` (estructura + tests) y `make validate-consumer CONSUMER=../<repo>`.
+- **Pasos por semana según el plan:** se mantiene el calendario semanal (estructura C1–C17 de §5): `schema-validate` (sem. 3), `secure-base` (sem. 4), `test-kit` (sem. 5), `web-api-base` (sem. 6), `ci-pack` (sem. 7), ... hasta `cost-obs` (sem. 39).
 - **Próximo hito:** v1.0 en la semana 13, con 12 consumidores reales detrás.
 
 ### 10.1 La página de evidencia
