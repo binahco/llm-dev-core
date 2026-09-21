@@ -1,0 +1,14 @@
+[project]
+name = "llm-dev-core"
+version = "0.1.0"
+description = "Núcleo versionado del que dependen 52 proyectos en 52 semanas: un solo sistema acumulativo."
+requires-python = ">=3.12"
+dependencies = []
+
+[tool.uv]
+package = false
+
+# Monorepo: los módulos viven en packages/. Cada uno es su propio paquete.
+# El workspace uv se declara cuando exista el primer módulo (sem. 2, llm-client).
+# [tool.uv.workspace]
+# members = ["packages/*"]
