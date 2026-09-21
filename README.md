@@ -14,5 +14,6 @@ Toda llamada a un LLM pasa por `llm-client`, todo prompt vive en `prompt-registr
 
 ```bash
 uv sync        # instala el workspace
+make validate  # invariantes: estructura, plantillas, ADR-0, sintaxis
 uv run pytest  # tests (aún ninguno hasta sem. 2)
 ```

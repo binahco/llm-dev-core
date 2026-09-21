@@ -193,7 +193,7 @@ llm-dev-core/
 │   ├── prompt-registry/   # C16 [seed sem. 35]
 │   └── cost-obs/          # C17 [seed sem. 39]
 ├── scripts/
-│   ├── check_consumers.py # topic `llm-dev-consumer` + manifests
+│   ├── check_consumers.py # invariantes ejecutables: manifiestos y prompts (`make validate`)
 │   ├── collect_metrics.py # página de evidencia (§10.1)
 │   └── compat_check.sh    # workflow compat-last-5
 ├── templates/
@@ -339,8 +339,8 @@ La regla es simple: si no puedes pagar el eval de forma repetible, el eval está
 ## 10. Estado actual
 
 - **Versión:** v0.2 (seed revisado)
-- **Módulos existentes:** ninguno. El seed de esta semana es este documento + las plantillas de `templates/` + el andamiaje de `scripts/`.
-- **Pendiente antes de la semana 2:** ADR expandido en `docs/decisions/0000-stack.md`, contrato mínimo de `llm-client` (API + schema de span), plantilla de consumidor clonable.
+- **Módulos existentes:** ninguno. El seed de esta semana es este documento, las plantillas de `templates/` y el enforcement base en `scripts/` (`make validate`).
+- **Listo antes de la semana 2:** ADR-0 en `docs/decisions/0000-stack.md`, contrato mínimo de `llm-client` (`0001-llm-client-contract.md`), plantilla de consumidor clonable en `templates/`.
 - **Próxima semana (sem. 2):** `llm-client` nace dentro del CLI de commits — el proyecto es la excusa, el módulo es el producto. Ya con record/replay y schema de span desde el día 1.
 - **Próximo hito:** v1.0 en la semana 13, con 12 consumidores reales detrás.
 
