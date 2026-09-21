@@ -4,11 +4,12 @@
 
 Núcleo versionado y publicado del que dependen 52 proyectos en 52 semanas: un solo sistema acumulativo, no 52 demos desconectadas.
 
-Toda llamada a un LLM pasa por `llm-client`, todo prompt vive en `prompt-registry`, toda salida no confiable pasa por `schema-validate`. Ver `ARCHITECTURE.md` para la tesis, las decisiones (D1–D12) y las métricas verificables.
+Toda llamada a un LLM pasa por `llm-client`, toda salida no confiable pasa por `schema-validate`, todo prompt vive en `prompt-registry`. Ver `ARCHITECTURE.md` para la tesis, las decisiones (D1–D12) y las métricas verificables.
 
-- **Estado:** v0.1 (seed) · Semana 1
+- **Estado:** v0.3 · Semana 3
 - **Stack:** Python 3.12+ (ADR-0, `docs/decisions/0000-stack.md`)
 - **Estructura:** `packages/` (módulos), `templates/` (consumidor clonable), `scripts/` (verificación), `docs/`
+- **Empaquetado:** una sola dist `llm-dev-core` (D1): `llm_client` y `schema_validate` top-level; los consumidores dependen de `llm-dev-core ^0.x`, nunca de módulos sueltos.
 
 ## Desarrollo
 

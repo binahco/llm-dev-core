@@ -14,6 +14,7 @@ class TokenUsage(BaseModel):
 class ValidationResult(BaseModel):
     ok: bool
     errors: list[str] = Field(default_factory=list)
+    parsed: Any = None
 
 
 class CompletionRequest(BaseModel):

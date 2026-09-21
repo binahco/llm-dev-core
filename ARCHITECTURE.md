@@ -1,6 +1,6 @@
 # ARCHITECTURE.md — llm-dev-core
 
-> **Estado:** v0.2 (seed revisado) · **Última revisión:** 2026-09-20
+> **Estado:** v0.3 (seed revisado) · **Última revisión:** 2026-09-21
 > **Audiencia:** yo en 52 semanas, cualquiera que revise este repo, y entrevistadores técnicos.
 
 ---
@@ -177,21 +177,22 @@ llm-dev-core/
 ├── packages/
 │   ├── llm-client/        # C1  [seed sem. 2]
 │   ├── schema-validate/   # C2  [seed sem. 3]
-│   ├── web-api-base/      # C3  [seed sem. 4]
+│   ├── secure-base/       # C3  [seed sem. 4]
 │   ├── test-kit/          # C4  [seed sem. 5]
-│   ├── ci-pack/           # C5  [seed sem. 6]
-│   ├── cache-ratelimit/   # C6  [seed sem. 7]
-│   ├── bot-base/          # C7  [seed sem. 9]
-│   ├── parser-io/         # C8  [seed sem. 10]
-│   ├── docs-gen/          # C9  [seed sem. 12]
-│   ├── vector-core/       # C10 [seed sem. 16]
-│   ├── diff-engine/       # C11 [seed sem. 19]
-│   ├── agent-loop/        # C12 [seed sem. 21]
-│   ├── auth-base/         # C13 [seed sem. 25]
-│   ├── gh-app/            # C14 [seed sem. 27]
-│   ├── scraper/           # C15 [seed sem. 28]
-│   ├── prompt-registry/   # C16 [seed sem. 35]
-│   └── cost-obs/          # C17 [seed sem. 39]
+│   ├── web-api-base/      # C5  [seed sem. 6]
+│   ├── ci-pack/           # C6  [seed sem. 7]
+│   ├── cache-ratelimit/   # C7  [seed sem. 8]
+│   ├── bot-base/          # C8  [seed sem. 9]
+│   ├── parser-io/         # C9  [seed sem. 10]
+│   ├── docs-gen/          # C10 [seed sem. 12]
+│   ├── vector-core/       # C11 [seed sem. 16]
+│   ├── diff-engine/       # C12 [seed sem. 19]
+│   ├── agent-loop/        # C13 [seed sem. 21]
+│   ├── auth-base/         # C14 [seed sem. 25]
+│   ├── gh-app/            # C15 [seed sem. 27]
+│   ├── scraper/           # C16 [seed sem. 28]
+│   ├── prompt-registry/   # C17 [seed sem. 35]
+│   └── cost-obs/          # C18 [seed sem. 39]
 ├── scripts/
 │   ├── check_consumers.py # invariantes ejecutables: manifiestos y prompts (`make validate`)
 │   ├── collect_metrics.py # página de evidencia (§10.1)
@@ -210,7 +211,7 @@ llm-dev-core/
 └── CHANGELOG.md           # desde v1.0 (sem. 13)
 ```
 
-**Reglas de dependencia:** `llm-client` es la hoja (no depende de nadie). `prompt-registry` y `test-kit` dependen de `llm-client`, nunca al revés. `agent-loop` no depende de `vector-core` — que se compongan en el consumidor hasta que la regla del tercer uso (D12) diga lo contrario. `cost-obs` lee los spans de `llm-client`; ningún módulo depende de `cost-obs`.
+**Reglas de dependencia:** `llm-client` es la hoja (no depende de nadie) y expone la reparación con presupuesto; `schema-validate` se compone con ella **solo vía el hook `validator`** (nunca importada por el cliente — ver ADR-2). `prompt-registry` y `test-kit` dependen de `llm-client`, nunca al revés. `agent-loop` no depende de `vector-core` — que se compongan en el consumidor hasta que la regla del tercer uso (D12) diga lo contrario. `cost-obs` lee los spans de `llm-client`; ningún módulo depende de `cost-obs`.
 
 La semana 2 no empieza desde cero: clona la plantilla de consumidor (`templates/`), no un repo vacío.
 
@@ -338,11 +339,12 @@ La regla es simple: si no puedes pagar el eval de forma repetible, el eval está
 
 ## 10. Estado actual
 
-- **Versión:** v0.2
-- **Módulos existentes:** `packages/llm-client` v0.1.0 (seed sem. 2) — `complete`/`stream`, retry+backoff+jitter, reparación con tope, cap de costo, cache, span de 20 campos, record/replay nativo, transportes `opencode` (sesión local sin API key) y `openai-compatible` (HTTP).
-- **Consumidores:** `Proyectos/commit-cli` (sem. 2) — CLI que propone mensajes de commit desde `git diff` mediante `llm-client`; depende editable del core.
-- **Enforcement:** ADR-0 y ADR-1 (`llm-client-contract`) en `docs/decisions/`, plantillas en `templates/`, `make validate` (estructura + tests) y `make validate-consumer CONSUMER=../<repo>`.
-- **Pasos por semana según el plan:** se mantiene el calendario semanal (estructura C1–C17 de §5): `schema-validate` (sem. 3), `secure-base` (sem. 4), `test-kit` (sem. 5), `web-api-base` (sem. 6), `ci-pack` (sem. 7), ... hasta `cost-obs` (sem. 39).
+- **Versión:** v0.3
+- **Módulos existentes:** `packages/llm-client` v0.1.0 (seed sem. 2) — `complete`/`stream`, retry+backoff+jitter, reparación con tope, cap de costo, cache, span de 20 campos, record/replay nativo, transportes `opencode` (sesión local sin API key) y `openai-compatible` (HTTP). `packages/schema-validate` v0.1.0 (seed sem. 3) — validación Pydantic de la salida LLM (ADR-2): JSON con/sin caretas, errores campo a campo, registro `SchemaId → modelo`, `parsed` en `ValidationResult`; compone con `llm-client` vía el hook `validator`.
+- **Consumidores:** `Proyectos/commit-cli` (sem. 2) — CLI que propone mensajes de commit desde `git diff`; `Proyectos/release-scribe` (sem. 3) — release notes JSON validadas por `schema-validate` desde `git log`. Ambos dependen de la dist unificada `llm-dev-core` (editable). La métrica de reutilización real se medirá en §10.1 desde el corte de semanal.
+- **Empaquetado:** una sola dist `llm-dev-core`, publicable vía `uv build`/`uv publish` con `llm_client` y `schema_validate` top-level (D1). Pendiente la primera publicación real en PyPI (se cierra en la sem. 3 con v0.3).
+- **Enforcement:** ADR-0, ADR-1 (`llm-client-contract`) y ADR-2 (`schema-validate-contract`) en `docs/decisions/`, plantillas en `templates/`, `make validate` (estructura + tests) y `make validate-consumer CONSUMER=../<repo>`.
+- **Pasos por semana según el plan:** se mantiene el calendario semanal (estructura C1–C18 de §5, armonizada en la sem. 3): `schema-validate` (sem. 3), `secure-base` (sem. 4), `test-kit` (sem. 5), `web-api-base` (sem. 6), `ci-pack` (sem. 7), `cache-ratelimit` (sem. 8), `bot-base` (sem. 9), `parser-io` (sem. 10), `docs-gen` (sem. 12), ... hasta `cost-obs` (sem. 39).
 - **Próximo hito:** v1.0 en la semana 13, con 12 consumidores reales detrás.
 
 ### 10.1 La página de evidencia

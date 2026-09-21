@@ -232,6 +232,7 @@ class LlmClient:
     ) -> CompletionResult:
         return CompletionResult(
             raw_text=text,
+            parsed=getattr(validation, "parsed", None),
             validation=validation,
             usage=usage,
             cost_usd=span.cost_usd or Decimal("0"),

@@ -2,6 +2,24 @@
 
 La versión es la del paquete `llm-dev-core`. El historial comienza con **v1.0 (semana 13)** — hasta entonces el core es `0.x` y puede romperse sin aviso (D3).
 
+## v0.3 — 2026-09-21 (schema-validate seed + dist unificada)
+
+- Semana 3: nace `packages/schema-validate` v0.1.0 dentro de un consumidor real (`release-scribe`).
+  - Contrato ADR-2: validación Pydantic de la salida LLM (JSON con/sin caretas, errores campo a campo),
+    registro `SchemaId → modelo`, `parsed` poblando `CompletionResult.parsed`.
+  - Reparación: el lazo/presupuesto/cap sigue en `llm-client` (hoja); `schema-validate` alimenta los
+    errores vía el hook `validator`. Ajuste menor ADR-1: `ValidationResult.parsed`.
+  - Tape real grabado de `opencode run` sin API key (replica validada con `parsed`).
+- **Empaquetado unificado (D1):** el core pasa a publicarse como una sola dist `llm-dev-core` (0.3.0)
+  con `llm_client` y `schema_validate` top-level; los consumidores dependen de `llm-dev-core ^0.3`, nunca
+  de módulos sueltos. `commit-cli` migra a la dist unificada.
+- Segundo consumidor: `Proyectos/release-scribe` (sem. 3) — release notes JSON validadas desde `git log`;
+  reutiliza `llm-client` + `schema-validate`.
+- Calendario armonizado (§5 vs. §10): `schema-validate` (3), `secure-base` (4), `test-kit` (5),
+  `web-api-base` (6), `ci-pack` (7), `cache-ratelimit` (8), `bot-base` (9), … hasta `cost-obs` (39).
+  Deuda aprobada en el review: la sem-2 quería publicar ya en PyPI; al unificar el empaquetado, la primera
+  publicación real pasa a ser esta v0.3.
+
 ## v0.2 — 2026-09-20 (llm-client seed)
 
 - Semana 2: nace `packages/llm-client` v0.1.0 dentro de un consumidor real (`commit-cli`).

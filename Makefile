@@ -1,5 +1,5 @@
 PY := uv run python
-PYTEST := uv run --package llm-dev-client pytest
+PYTEST := uv run pytest
 CHECK := scripts/check_consumers.py
 
 .PHONY: validate validate-consumer
