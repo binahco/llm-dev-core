@@ -19,6 +19,11 @@ La versión es la del paquete `llm-dev-core`. El historial comienza con **v1.0 (
 - Wheel unificado (D1): `llm-dev-core 0.4.0` ahora empaqueta `llm_client` + `schema_validate` + `secure_base`
   top-level. `make validate` y `validate-consumer` (3 consumidores) en verde; 37 tests.
 - Publicado `llm-dev-core 0.4.0` en PyPI (trusted publishing, tag `v0.4.0`).
+- Nota del cómo: el primer tag `v0.4.0` se creó antes del bump de versión en `pyproject.toml`, así que la
+  primera ejecución de `publish.yml` subió el wheel `0.3.0` ya existente (409 en PyPI). Se corrigió bumping
+  a `0.4.0` y reconstruyendo el tag sobre ese commit (queda un run fallido en Actions y un mensaje de commit
+  de "0.4" que no incluía el bump; el estado final es correcto). Lección: el tag de publicación se crea
+  **después** de confirmar la versión en `pyproject.toml`.
 
 ## v0.3 — 2026-09-21 (schema-validate seed + dist unificada)
 
