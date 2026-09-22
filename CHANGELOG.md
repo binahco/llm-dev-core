@@ -19,6 +19,8 @@ La versión es la del paquete `llm-dev-core`. El historial comienza con **v1.0 (
   `web-api-base` (6), `ci-pack` (7), `cache-ratelimit` (8), `bot-base` (9), … hasta `cost-obs` (39).
   Deuda aprobada en el review: la sem-2 quería publicar ya en PyPI; al unificar el empaquetado, la primera
   publicación real pasa a ser esta v0.3.
+- Publicado `llm-dev-core 0.3.0` en PyPI (trusted publishing OIDC, workflow `publish.yml` en tags `v*`):
+  primera release real del core; instalable y verificado desde el registro (D1).
 
 ## v0.2 — 2026-09-20 (llm-client seed)
 
