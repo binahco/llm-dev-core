@@ -78,7 +78,7 @@ def test_registry_make_validator_via_factory() -> None:
 def test_default_registry_register() -> None:
     register("legacy", ReleaseNotes)
     validator = make_validator("legacy")
-    assert validator("x").ok is False
+    assert validator("x", "legacy").ok is False
 
 
 class SequenceProvider:
@@ -162,3 +162,16 @@ def test_llm_client_validation_failed_after_cap() -> None:
     assert span.status == "failed"
     assert span.repaired_attempts == 2
     assert span.error_type == "validation"
+
+
+def test_validator_skips_when_schema_is_none() -> None:
+    """Contrato validar-por-contrato: sin schema, el validador no repara (modo texto)."""
+    registry = SchemaRegistry()
+    registry.register("release-notes-v1", ReleaseNotes)
+    validator = registry.make_validator("release-notes-v1")
+
+    result = validator("una linea de texto sin json", None)
+
+    assert result.ok is True
+    assert result.errors == []
+    assert result.parsed is None

@@ -2,6 +2,29 @@
 
 La versión es la del paquete `llm-dev-core`. El historial comienza con **v1.0 (semana 13)** — hasta entonces el core es `0.x` y puede romperse sin aviso (D3).
 
+## v0.5 — 2026-09-22 (test-kit seed)
+
+- Semana 5: nace `packages/test-kit` v0.1.0 dentro de un consumidor real (`bench-runner`).
+  - Contrato ADR-4: los tests de un prompt son datasets — `EvalDataset.from_jsonl` con casos
+    `{prompt_id, prompt_version, input, expected, criteria}`; a partir de v0.5 un fichero inexistente
+    se reporta como `DatasetError` (exit 2), no como traceback.
+  - Tres criterios deterministas: `deterministic_match` (colapsa espacios, opción `ignore_case`),
+    `json_match` (JSON con/sin caretas) y `schema_match` (estructura validada vía `schema-validate`,
+    `expected` opcional).
+  - Runner agnóstico del transporte: el consumidor inyecta `judge: EvalCase → CompletionResult`; el
+    runner suma `pass_rate`, compara contra `threshold` y acumula `cost_usd`. Modos `smoke`/`full` (§8.1).
+- Cuarto consumidor: `Proyectos/bench-runner` (sem. 5) — CLI `bench-runner` que evalúa prompts contra
+  datasets congelados (exit 0 verde, 1 regresión, 2 dataset inválido). Su propio prompt
+  `regression-report-generator` (triaje de regresión, `modo json` para reportes estructurados y
+  `modo texto` para veredicto en línea) nace evaluado: dogfood del seed. 4 casos, cassette real
+  grabado, replay determinista en CI (D4) que hasta reproduce la reparación grabada.
+- `schema-validate`: el hook `validator` respeta el contrato `schema=None → ok` (necesario para que
+  `modo texto` no fuerce reparaciones JSON al validar salidas sin schema).
+- Regla nueva en vigor desde la sem. 5: todo prompt nuevo del core/consumidores debe tener evaluación
+  (frontmatter `eval` + dataset no vacío), enforced por `make validate-consumer`.
+- Wheel unificado (D1): `llm-dev-core 0.5.0` empaqueta `llm_client` + `schema_validate` + `secure_base`
+  + `test_kit` top-level. `make validate` y `validate-consumer` (4 consumidores) en verde; 49 tests.
+
 ## v0.4 — 2026-09-22 (secure-base seed)
 
 - Semana 4: nace `packages/secure-base` v0.1.0 dentro de un consumidor real (`sec-check`).

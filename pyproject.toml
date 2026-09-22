@@ -1,6 +1,6 @@
 [project]
 name = "llm-dev-core"
-version = "0.4.0"
+version = "0.5.0"
 description = "Núcleo versionado del que dependen 52 proyectos en 52 semanas: un solo sistema acumulativo."
 authors = [{ name = "binahco", email = "binahco.sas@gmail.com" }]
 requires-python = ">=3.12"
@@ -19,6 +19,7 @@ packages = [
     "packages/llm-client/src/llm_client",
     "packages/schema-validate/src/schema_validate",
     "packages/secure-base/src/secure_base",
+    "packages/test-kit/src/test_kit",
 ]
 
 [tool.uv.workspace]

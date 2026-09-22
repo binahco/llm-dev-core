@@ -28,6 +28,8 @@ class SchemaRegistry:
         model = self.get(schema_id)
 
         def validator(text: str, schema: str | None = None) -> ValidationResult:
+            if schema is None:
+                return ValidationResult(ok=True, errors=[], parsed=None)
             return validate_text(model, text)
 
         return validator
