@@ -2,6 +2,31 @@
 
 La versión es la del paquete `llm-dev-core`. El historial comienza con **v1.0 (semana 13)** — hasta entonces el core es `0.x` y puede romperse sin aviso (D3).
 
+## v0.6 — 2026-09-22 (web-api-base seed + retrofit #0)
+
+- Semana 6: nace `packages/web-api-base` v0.1.0 dentro de un consumidor real (`eval-api`).
+  - Contrato ADR-5: Swift FastAPI LLM-ready — `create_app(title, version, *, client)` expone
+    `GET /health`, `POST /llm` (pipeline completo de `llm-client` con la validez como gate) y
+    errores uniformes: 429 `presupuesto_excedido`, 422 `salida_no_validada`/`peticion_invalida`,
+    502 `proveedor_indisponible`, 500 `error_interno`. `llm_complete`/`sse_response` para reuso.
+  - Composición, no acoplamiento: la base recibe el `client` ya cableado por el consumidor
+    (renderer/validator/emitter) y **no** importa `test-kit` (la evaluación es composición, no capacidad).
+- Quinto consumidor: `Proyectos/eval-api` (sem. 6) — "bench-runner como servicio": `POST /evals/run`
+  (test-kit por HTTP con umbral; 422 `dataset_invalido`) y `POST /summarize` (prompt
+  `eval-summarizer`, schema `eval-summary-v1`, gate del core). Dogfood: el resumidor nace evaluado
+  (3 casos, cassette real grabado, replay determinista).
+- **Retrofit #0 (sem. 6):** los prompts de los consumidores 2–4 salen del seed de 1 caso y pasan a
+  datasets congelados reales (3 casos cada uno) + cassettes grabados + CI `eval-smoke.yml`:
+  - `commit-cli`: el prompt detectado como bug — pedía "la lengua de los mensajes previos" sin
+    recibirlos (el modelo intentaba `git log`). Prompt v0.2.0 con `language` explícito.
+  - `release-scribe` y `sec-check`: datasets 3 casos + replay determinista en CI.
+  - Issues de retrofit creados en los 3 repos (label `retrofit`).
+- Decisión: FastAPI (y starlette) entran como dependencia obligatoria del wheel unificado (D1) —
+  documentado en ADR-5; lo mismo que ya hizo sem 1 con httpx/pydantic.
+- Cosmética: notas "ci-pack (sem. 6)" corregidas a sem. 7 en `scripts/` (el calendario manda).
+- Wheel unificado (D1): `llm-dev-core 0.6.0` empaqueta `llm_client` + `schema_validate` +
+  `secure_base` + `test_kit` + `web_api_base` top-level. `make validate` en verde; 59 tests.
+
 ## v0.5 — 2026-09-22 (test-kit seed)
 
 - Semana 5: nace `packages/test-kit` v0.1.0 dentro de un consumidor real (`bench-runner`).
