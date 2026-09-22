@@ -1,6 +1,6 @@
 [project]
 name = "llm-dev-core"
-version = "0.3.0"
+version = "0.4.0"
 description = "Núcleo versionado del que dependen 52 proyectos en 52 semanas: un solo sistema acumulativo."
 authors = [{ name = "binahco", email = "binahco.sas@gmail.com" }]
 requires-python = ">=3.12"
