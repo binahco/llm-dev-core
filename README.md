@@ -6,15 +6,15 @@ Núcleo versionado y publicado del que dependen 52 proyectos en 52 semanas: un s
 
 Toda llamada a un LLM pasa por `llm-client`, toda salida no confiable pasa por `schema-validate`, todo prompt vive en `prompt-registry`. Ver `ARCHITECTURE.md` para la tesis, las decisiones (D1–D12) y las métricas verificables.
 
-- **Estado:** v0.3 · Semana 3
+- **Estado:** v0.4 · Semana 4
 - **Stack:** Python 3.12+ (ADR-0, `docs/decisions/0000-stack.md`)
 - **Estructura:** `packages/` (módulos), `templates/` (consumidor clonable), `scripts/` (verificación), `docs/`
-- **Empaquetado:** una sola dist `llm-dev-core` (D1): `llm_client` y `schema_validate` top-level; los consumidores dependen de `llm-dev-core ^0.x`, nunca de módulos sueltos.
+- **Empaquetado:** una sola dist `llm-dev-core` (D1): `llm_client`, `schema_validate` y `secure_base` top-level; los consumidores dependen de `llm-dev-core ^0.x`, nunca de módulos sueltos.
 
 ## Desarrollo
 
 ```bash
 uv sync        # instala el workspace
 make validate  # invariantes: estructura, plantillas, ADR-0, sintaxis
-uv run pytest  # tests (aún ninguno hasta sem. 2)
+uv run pytest  # tests (37 a la fecha)
 ```

@@ -2,6 +2,24 @@
 
 La versión es la del paquete `llm-dev-core`. El historial comienza con **v1.0 (semana 13)** — hasta entonces el core es `0.x` y puede romperse sin aviso (D3).
 
+## v0.4 — 2026-09-22 (secure-base seed)
+
+- Semana 4: nace `packages/secure-base` v0.1.0 dentro de un consumidor real (`sec-check`).
+  - Contrato ADR-3: `detect`/`redact`/`sanitize_for_prompt`/`assert_redacted` + `SecurityProfile` (declaración
+    de tipos para el lint anti-secretos de `ci-pack`, sem. 7).
+  - Máscara unidireccional y determinista: placeholder `[REDACTED:<tipo>:<n>]`; `Finding.match` es preview
+    truncado (24 chars), nunca el secreto completo. 9 detectores (email, phone, ipv4, credit_card, aws_access_key,
+    github_token, private_key, bearer, url_userinfo).
+  - `secure-base` es hoja (no depende de `llm-client` ni de `schema-validate`); se compone en el renderer del
+    consumidor, antes de que el texto cruce al proveedor.
+- Tercer consumidor: `Proyectos/sec-check` (sem. 4) — escáner de secretos con triaje LLM: detecta en `git diff`
+  o archivo, redacta con `secure-base`, aborta si `assert_redacted` no es vacío, y solo el texto enmascarado viaja
+  al LLM (`opencode` local o replay). Reporte `sec-findings-v1` validado con `schema-validate`; exit 0 sin secretos,
+  1 con secretos, 2 inválido. Tape real grabado con 3 hallazgos críticos, replay en verde.
+- Wheel unificado (D1): `llm-dev-core 0.4.0` ahora empaqueta `llm_client` + `schema_validate` + `secure_base`
+  top-level. `make validate` y `validate-consumer` (3 consumidores) en verde; 37 tests.
+- Publicado `llm-dev-core 0.4.0` en PyPI (trusted publishing, tag `v0.4.0`).
+
 ## v0.3 — 2026-09-21 (schema-validate seed + dist unificada)
 
 - Semana 3: nace `packages/schema-validate` v0.1.0 dentro de un consumidor real (`release-scribe`).

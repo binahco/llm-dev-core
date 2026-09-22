@@ -1,6 +1,6 @@
 # ARCHITECTURE.md — llm-dev-core
 
-> **Estado:** v0.3 (seed revisado) · **Última revisión:** 2026-09-21
+> **Estado:** v0.4 (seed revisado) · **Última revisión:** 2026-09-22
 > **Audiencia:** yo en 52 semanas, cualquiera que revise este repo, y entrevistadores técnicos.
 
 ---
@@ -131,7 +131,7 @@ La reparación tiene **presupuesto**: máximo 2 intentos y un cap de costo por m
 
 ```yaml
 id: commit-message-generator
-version: 0.3.0
+version: 0.4.0
 owner: llm-dev-core
 model_family: gpt-4o-mini
 schema: CommitMessage
@@ -339,11 +339,11 @@ La regla es simple: si no puedes pagar el eval de forma repetible, el eval está
 
 ## 10. Estado actual
 
-- **Versión:** v0.3
-- **Módulos existentes:** `packages/llm-client` v0.1.0 (seed sem. 2) — `complete`/`stream`, retry+backoff+jitter, reparación con tope, cap de costo, cache, span de 20 campos, record/replay nativo, transportes `opencode` (sesión local sin API key) y `openai-compatible` (HTTP). `packages/schema-validate` v0.1.0 (seed sem. 3) — validación Pydantic de la salida LLM (ADR-2): JSON con/sin caretas, errores campo a campo, registro `SchemaId → modelo`, `parsed` en `ValidationResult`; compone con `llm-client` vía el hook `validator`.
-- **Consumidores:** `Proyectos/commit-cli` (sem. 2) — CLI que propone mensajes de commit desde `git diff`; `Proyectos/release-scribe` (sem. 3) — release notes JSON validadas por `schema-validate` desde `git log`. Ambos dependen de la dist unificada `llm-dev-core` (editable). La métrica de reutilización real se medirá en §10.1 desde el corte de semanal.
-- **Empaquetado:** una sola dist `llm-dev-core` (D1) publicada en PyPI: `llm_client` y `schema_validate` top-level. La publicación es automática desde tag `v*` vía trusted publishing OIDC (workflow `publish.yml`, sin tokens guardados).
-- **Enforcement:** ADR-0, ADR-1 (`llm-client-contract`) y ADR-2 (`schema-validate-contract`) en `docs/decisions/`, plantillas en `templates/`, `make validate` (estructura + tests) y `make validate-consumer CONSUMER=../<repo>`.
+- **Versión:** v0.4
+- **Módulos existentes:** `packages/llm-client` v0.1.0 (seed sem. 2) — `complete`/`stream`, retry+backoff+jitter, reparación con tope, cap de costo, cache, span de 20 campos, record/replay nativo, transportes `opencode` (sesión local sin API key) y `openai-compatible` (HTTP). `packages/schema-validate` v0.1.0 (seed sem. 3) — validación Pydantic de la salida LLM (ADR-2): JSON con/sin caretas, errores campo a campo, registro `SchemaId → modelo`, `parsed` en `ValidationResult`; compone con `llm-client` vía el hook `validator`. `packages/secure-base` v0.1.0 (seed sem. 4) — utilidad de máscara (ADR-3): `detect`/`redact`/`sanitize_for_prompt`/`assert_redacted` + `SecurityProfile`; máscara unidireccional y determinista (placeholder `[REDACTED:<tipo>:<n>]`), 9 detectores, hoja de la seguridad (no depende de `llm-client` ni `schema-validate`); compone en los renderers, antes de que el texto cruce al proveedor.
+- **Consumidores:** `Proyectos/commit-cli` (sem. 2) — CLI que propone mensajes de commit desde `git diff`; `Proyectos/release-scribe` (sem. 3) — release notes JSON validadas por `schema-validate` desde `git log`; `Proyectos/sec-check` (sem. 4) — escáner de secretos con triaje LLM: redacta con `secure-base` y aborta si `assert_redacted` no es vacío, reporte `sec-findings-v1` validado por `schema-validate`. Los tres dependen de la dist unificada `llm-dev-core` (editable). La métrica de reutilización real se medirá en §10.1 desde el corte de semanal.
+- **Empaquetado:** una sola dist `llm-dev-core` (D1) publicada en PyPI: `llm_client`, `schema_validate` y `secure_base` top-level. La publicación es automática desde tag `v*` vía trusted publishing OIDC (workflow `publish.yml`, sin tokens guardados).
+- **Enforcement:** ADR-0, ADR-1 (`llm-client-contract`), ADR-2 (`schema-validate-contract`) y ADR-3 (`secure-base-contract`) en `docs/decisions/`, plantillas en `templates/`, `make validate` (estructura + tests) y `make validate-consumer CONSUMER=../<repo>`.
 - **Pasos por semana según el plan:** se mantiene el calendario semanal (estructura C1–C18 de §5, armonizada en la sem. 3): `schema-validate` (sem. 3), `secure-base` (sem. 4), `test-kit` (sem. 5), `web-api-base` (sem. 6), `ci-pack` (sem. 7), `cache-ratelimit` (sem. 8), `bot-base` (sem. 9), `parser-io` (sem. 10), `docs-gen` (sem. 12), ... hasta `cost-obs` (sem. 39).
 - **Próximo hito:** v1.0 en la semana 13, con 12 consumidores reales detrás.
 
