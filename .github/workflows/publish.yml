@@ -1,0 +1,22 @@
+name: publish
+
+on:
+  push:
+    tags: ["v*"]
+
+permissions:
+  contents: read
+  id-token: write # obligatorio para trusted publishing (OIDC, sin token guardado)
+
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: astral-sh/setup-uv@v6
+        with:
+          python-version-file: .python-version
+      - run: uv sync
+      - run: make validate
+      - run: uv build
+      - run: uv publish
