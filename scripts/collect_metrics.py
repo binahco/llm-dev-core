@@ -4,6 +4,7 @@
 Uso:
   collect_metrics.py [--spans RUTA_SPANS] CONSUMIDOR ...
   collect_metrics.py --self-auto   # detecta consumidores en ../ y spans en ./spans
+                                   # (en CI sin consumidores genera evidencia vacía, exit 0)
 
 Escribe `docs/metrics/evidence.html` y devuelve 0.
 """
@@ -39,6 +40,10 @@ def _main(argv: list[str] | None = None) -> int:
         spans_dir = Path(args.spans) if args.spans else None
 
     if not repos:
+        if args.self_auto:
+            print("collect_metrics: sin consumidores en ../ — evidencia vacía (exit 0)")
+            OUT.write_text(render(collect([], spans_dir=None)))
+            return 0
         parser.print_usage(sys.stderr)
         return 2
 
