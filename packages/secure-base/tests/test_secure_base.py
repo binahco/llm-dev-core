@@ -34,6 +34,16 @@ def test_no_false_positive_on_plain_text() -> None:
     assert findings == []
 
 
+def test_no_false_positive_on_float_literals_json() -> None:
+    findings = detect('{"pass_rate": 0.6666666666666666, "total": 3, "passed": 2}')
+    assert findings == []
+
+
+def test_no_false_positive_on_float_literal_bare() -> None:
+    assert detect("x = 0.6666666666666666") == []
+    assert detect("rate 1.3333333333333333, n=3") == []
+
+
 def test_redact_is_one_way_and_deterministic() -> None:
     result = redact(SAMPLE)
     assert "persona@ejemplo.com" not in result.text
