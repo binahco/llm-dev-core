@@ -2,6 +2,23 @@
 
 La versión es la del paquete `llm-dev-core`. El historial comienza con **v1.0 (semana 13)** — hasta entonces el core es `0.x` y puede romperse sin aviso (D3).
 
+## v0.9 — 2026-09-30 (bot-base seed)
+
+- Semana 9: nace `packages/bot-base` v0.1.0 dentro de un consumidor real
+  (`fleet-bot`).
+  - Contrato ADR-8: la **recurrencia programada determinista** de la flota
+    (eval-smoke diario, evidencia, resúmenes) formalizada: `Schedule` (intervalo
+    monótono o predicado de calendario, reloj inyectable), `RunStore`
+    (`JsonRunStore` atómico) para idempotencia por última corrida, `Task` +
+    `run_tasks` (fallos capturados en `Digest`, nada se corta en silencio).
+  - Hoja mantiene la vida: `bot-base` no depende de `llm-client` ni de otro módulo
+    (pydantic + stdlib); la tarea LLM es composición del consumidor, como en ADR-7.
+- Robustez de la flota (deuda de la sem. 8): detectores `phone`/`credit_card` de
+  `secure-base` ignoran literales float (`0.6666…` dejó de sonar a tarjeta/teléfono).
+- Los 8 consumidores pasan a depender de `llm-dev-core ^0.9` (locks y workflows
+  `eval-smoke.yml` regenerados con `core_ref=v0.9.0`); CIs deterministas sobre
+  cassettes (D4), `ci-scribe audit` verde en los 8 sin hacks.
+
 ## v0.8 — 2026-09-23 (cache-ratelimit seed)
 
 - Semana 8: nace `packages/cache-ratelimit` v0.1.0 dentro de un consumidor real
