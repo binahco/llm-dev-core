@@ -1,28 +1,52 @@
 #!/usr/bin/env python3
-"""collect_metrics.py — genera la página de evidencia (§10.1).
+"""collect_metrics.py — página de evidencia (§10.1). Implementado con ci-pack (sem. 7).
 
-Contrato (se implementa en la semana 7 con ci-pack):
-  - lee los `core-consumer.yml` → % de reutilización por semana;
-  - lee los spans de `llm-client` → costo por proyecto y acumulado;
-  - calcula cobertura de evals (prompts con dataset / prompts totales);
-  - emite la matriz repo × versión-de-core;
-  - escribe el dashboard en `docs/metrics/` / una URL publicada.
+Uso:
+  collect_metrics.py [--spans RUTA_SPANS] CONSUMIDOR ...
+  collect_metrics.py --self-auto   # detecta consumidores en ../ y spans en ./spans
 
-Estado actual: stub con firma definida. Deuda documentada hacia sem. 7.
+Escribe `docs/metrics/evidence.html` y devuelve 0.
 """
 
 from __future__ import annotations
 
+import argparse
+import sys
+from pathlib import Path
 
-def collect(metrics_dir: str, spans_dir: str) -> dict:
-    """Devuelve el dict con las métricas agregadas a partir de las fuentes."""
-    raise NotImplementedError("ci-pack (sem. 7): implementar agregación de métricas")
+from ci_pack import collect, render
+
+ROOT = Path(__file__).resolve().parents[1]
+OUT = ROOT / "docs" / "metrics" / "evidence.html"
+SPANS_DEFAULT = ROOT.parent  # los repos de consumidores viven al lado del core
 
 
-def render(report: dict) -> str:
-    """Devuelve la página HTML del dashboard de evidencia."""
-    raise NotImplementedError("ci-pack (sem. 7): implementar render del dashboard")
+def _main(argv: list[str] | None = None) -> int:
+    parser = argparse.ArgumentParser(description=__doc__)
+    parser.add_argument("consumers", nargs="*", help="rutas a repos consumidores")
+    parser.add_argument("--spans", default=None, help="directorio raíz donde buscar spans/ por repo")
+    parser.add_argument("--self-auto", action="store_true", help="detecta consumidores en ../ y spans adyacantes")
+    args = parser.parse_args(argv)
+
+    repos: list[Path] = []
+    if args.self_auto:
+        for p in ROOT.parent.iterdir():
+            if p.is_dir() and (p / "core-consumer.yml").is_file():
+                repos.append(p)
+        spans_dir = None
+    else:
+        repos = [Path(c) for c in args.consumers]
+        spans_dir = Path(args.spans) if args.spans else None
+
+    if not repos:
+        parser.print_usage(sys.stderr)
+        return 2
+
+    report = collect(repos, spans_dir=spans_dir)
+    OUT.write_text(render(report))
+    print(f"evidence: {report.repo_count} consumidores, ${report.total_cost_usd:.4f} acumulado → {OUT.relative_to(ROOT)}")
+    return 0
 
 
 if __name__ == "__main__":
-    raise SystemExit("collect_metrics.py: stub de sem. 1, implementar en sem. 7")
+    raise SystemExit(_main())

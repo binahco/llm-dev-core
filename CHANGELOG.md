@@ -2,6 +2,35 @@
 
 La versión es la del paquete `llm-dev-core`. El historial comienza con **v1.0 (semana 13)** — hasta entonces el core es `0.x` y puede romperse sin aviso (D3).
 
+## v0.7 — 2026-09-23 (ci-pack seed)
+
+- Semana 7: nace `packages/ci-pack` v0.1.0 dentro de un consumidor real (`ci-scribe`).
+  - Contrato ADR-6: tres piezas. `lints`: `run_lints`/`lint_imports` (SDKs directos),
+    `lint_inline_prompts` (prompts pegados en código) y `lint_secrets` (vía `secure-base`
+    `assert_redacted`); salta tooling/cachés/tests/scripts y audita lo que cruza al proveedor
+    (cassettes, prompts, evals, src). `metrics`: `collect` lee `core-consumer.yml` + spans de
+    `llm-client` y `render` produce la página de evidencia (§10.1). `jobs`:
+    `render_eval_smoke_job(core_ref=...)` genera el `eval-smoke.yml` (el mismo layout local:
+    `git clone` del core en `../llm-dev-core`, `uv sync --frozen`, replay determinista).
+  - Sixth consumidor: `Proyectos/ci-scribe` (sem. 7) — fleet ops: CLI `eval`/`audit`/`evidence`
+    + Web API sobre `web-api-base` (`POST /fleet/audit` y `POST /fleet/triage`); el prompt
+    `eval-triage-generator` nace evaluado (3 casos, cassette real, replay determinista).
+    Dogfood: `audit` deserta la flota y `evidence` regenera la página; el `eval-smoke.yml`
+    de sus 6 consumidores sale ya de `ci_pack.jobs`.
+- **Auditoría de flota (sem. 7):** `ci-pack.lints` sobre los 5 consumidores previos desembocó en:
+  - detector `bearer` de `secure-base` endurecido (exige token real ≥8 chars; antes casaba
+    palabras como "Bearer en" → falso positivo);
+  - fixtures de credenciales de `sec-check` hechas capturables por los detectores y su cassette
+    re-grabado (3/3), sin `user:pass` ni claves sueltas en la cinta;
+  - deuda CI de `bench-runner` (sem. 5) cerrada: `eval-smoke.yml` generado y en verde;
+  - los 4 workflows previos regenerados por `ci_pack.jobs` manteniendo su `core_ref` coincidente
+    con el `uv.lock` de cada consumidor.
+- Decisión: `ci_pack` no importa `test-kit` ni `web-api-base`; depende de `llm-client` (schema
+  de spans) y `secure-base` (máscara). PyYAML entra al wheel unificado (D1).
+- Wheel unificado (D1): `llm-dev-core 0.7.0` empaqueta `llm_client` + `schema_validate` +
+  `secure_base` + `test_kit` + `web_api_base` + `ci_pack` top-level. `make validate` en verde
+  y regenera `docs/metrics/evidence.html`; 66 tests.
+
 ## v0.6 — 2026-09-22 (web-api-base seed + retrofit #0)
 
 - Semana 6: nace `packages/web-api-base` v0.1.0 dentro de un consumidor real (`eval-api`).

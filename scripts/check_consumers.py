@@ -9,8 +9,8 @@ Modos:
 Salida: 0 = ok · 1 = inválido · 2 = uso incorrecto.
 Enforcement: `make validate` en local y workflow ci.yml.
 
-Nota: el lint anti-imports y la agregación de métricas llegan con ci-pack
-(sem. 7); aquí solo lo barato que §3 exige desde el día 1.
+Nota: los lints anti-imports/anti-secretos y la agregación de métricas viven en
+`packages/ci-pack` (sem. 7); aquí solo lo barato que §3 exige desde el día 1.
 """
 
 from __future__ import annotations

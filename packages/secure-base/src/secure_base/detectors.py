@@ -40,7 +40,7 @@ DETECTORS: tuple[Detector, ...] = (
     Detector("aws_access_key", re.compile(r"\b(?:AKIA|ASIA)[A-Z0-9]{16}\b")),
     Detector("github_token", re.compile(r"\b(?:ghp_|gho_|ghu_|ghs_|ghr_|github_pat_)[A-Za-z0-9_]{20,}\b")),
     Detector("private_key", re.compile(r"-----BEGIN (?:RSA |EC |OPENSSH |DSA |PGP )?PRIVATE KEY-----")),
-    Detector("bearer", re.compile(r"\bBearer [A-Za-z0-9._~+/-]+=*\b")),
+    Detector("bearer", re.compile(r"\bBearer (?=[A-Za-z0-9._~+/-]{8})([A-Za-z0-9._~+/-]{8,})=*\b")),
     Detector("url_userinfo", re.compile(r"(?i)\b\w+://[\w.-]+:[^@\s]+@")),
 )
 
