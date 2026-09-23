@@ -2,6 +2,27 @@
 
 La versión es la del paquete `llm-dev-core`. El historial comienza con **v1.0 (semana 13)** — hasta entonces el core es `0.x` y puede romperse sin aviso (D3).
 
+## v0.8 — 2026-09-23 (cache-ratelimit seed)
+
+- Semana 8: nace `packages/cache-ratelimit` v0.1.0 dentro de un consumidor real
+  (`llm-gateway`).
+  - Contrato ADR-7: la caché y el ritmo son *política de composición*, no de la hoja.
+    `RateLimiter` (token bucket `rpm`/`burst`, reloj inyectable para D4),
+    `ThrottledProvider` y `CachedProvider` (TTL + poda; streams sin cachear) implementan
+    `llm_client.provider.Provider` y se enchufan donde vive cualquier provider:
+    `LlmClient(ThrottledProvider(CachedProvider(inner), RateLimiter(rpm=60)))`.
+  - Séptimo consumidor: `Proyectos/llm-gateway` (sem. 8) — proxy HTTP sobre
+    `web-api-base`: `POST /llm` con la cadena cache+throttle, `GET /gateway/stats`
+    (bucket + hits/miss) y cabecera `X-Cache`; nace evaluado y con CI determinista.
+- **Excedente sem 7 (regla 5):** `ci_pack.jobs` ya no envuelve el `git clone` en
+  continuaciones YAML (`width=400`); test nuevo.
+- Decisión: `cache-ratelimit` depende solo de `llm-dev-client` (protocolo `Provider`);
+  los `429` de ritmo son de la capa HTTP (web-api-base), distintos del `429
+  presupuesto_excedido`.
+- Wheel unificado (D1): `llm-dev-core 0.8.0` empaqueta `llm_client` + `schema_validate`
+  + `secure_base` + `test_kit` + `web_api_base` + `ci_pack` + `cache_ratelimit`
+  top-level. `make validate` en verde; 80 tests.
+
 ## v0.7 — 2026-09-23 (ci-pack seed)
 
 - Semana 7: nace `packages/ci-pack` v0.1.0 dentro de un consumidor real (`ci-scribe`).

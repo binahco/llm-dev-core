@@ -110,3 +110,10 @@ class TestJobs:
         target.write_text(generated)
         parsed = yaml.safe_load(target.read_text())
         assert parsed["jobs"]["eval-smoke"]["runs-on"] == "ubuntu-latest"
+
+    def test_el_clone_no_se_envuelve_en_varias_lineas(self) -> None:
+        generated = render_eval_smoke_job(core_ref=CORE_REF)
+        clone = next(
+            l.strip() for l in generated.splitlines() if "git clone" in l and"--branch" in l
+        )
+        assert "llm-dev-core.git ../llm-dev-core" in clone

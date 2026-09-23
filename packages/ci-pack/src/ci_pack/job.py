@@ -40,4 +40,10 @@ def render_eval_smoke_job(
             }
         },
     }
-    return yaml.safe_dump(workflow, sort_keys=False, allow_unicode=True, default_flow_style=False)
+    return yaml.safe_dump(
+        workflow,
+        sort_keys=False,
+        allow_unicode=True,
+        default_flow_style=False,
+        width=400,
+    )
