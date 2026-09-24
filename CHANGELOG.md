@@ -2,6 +2,29 @@
 
 La versión es la del paquete `llm-dev-core`. El historial comienza con **v1.0 (semana 13)** — hasta entonces el core es `0.x` y puede romperse sin aviso (D3).
 
+## v0.10 — 2026-10-01 (parser-io seed)
+
+- Semana 10: nace `packages/parser-io` v0.1.0 dentro de un consumidor real
+  (`content-ray`).
+  - Contrato ADR-9: la **capa de lectura de archivos** que piden `docs-gen`
+    (sem. 12), `vector-core` (sem. 16), `diff-engine` (sem. 19) y `scraper`
+    (sem. 28). `parse(source, text?, fmt?)` normaliza `markdown`/`csv`/`json`
+    a un `ParsedDocument` determinista: secciones con anchor y `line_start`/
+    `line_end`, tablas con cabeceras y línea, `approx_tokens` para ventanas.
+    `ParseError` tipado con `source` + `line`; `iter_documents` sorted.
+  - Hoja: pydantic + stdlib, no importa `llm-client` (el sanitizado y el LLM se
+    componen en el consumidor, como ADR-7/8). El conteo real de tokens (no la
+    heurística) es de `vector-core`.
+- Noveno consumidor: `binahco/content-ray` (sem. 10) — escanea los `.md` de
+  `llm-dev-core` (dogfood real), ventanas por sección y digest LLM validado
+  (`content-scan-generator` → `content-summary-v1`); compone `secure-base`
+  (sanitizar antes del prompt) y `cache-ratelimit` (TTL por archivo). Nace
+  evaluado y con CI determinista.
+- La flota se mantiene en `llm-dev-core ^0.9` (parser-io es aditivo): la matriz
+  repo × versión queda mixta hasta el v1.0 (sem. 13) — decisión de la sem. 10.
+- Wheel unificado (D1): `llm-dev-core 0.10.0` añade `parser_io` top-level.
+  `make validate` en verde; evidencia a 9 consumidores.
+
 ## v0.9 — 2026-09-30 (bot-base seed)
 
 - Semana 9: nace `packages/bot-base` v0.1.0 dentro de un consumidor real
