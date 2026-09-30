@@ -1,6 +1,33 @@
 # Changelog
 
-La versión es la del paquete `llm-dev-core`. El historial comienza con **v1.0 (semana 13)** — hasta entonces el core es `0.x` y puede romperse sin aviso (D3).
+La versión es la del paquete `llm-dev-core`. El historial arranca con el **hito v1.0 (semana 13)**: hasta 0.10.0 el core era `0.x` y podía romperse sin aviso (D3); desde v1.0.0 los contratos son estables.
+
+## v1.0 — 2026-10-08 (hito v1.0, semana 13)
+
+- **Primer semver mayor: los contratos pasan a estables.** Diez módulos (ADR-0 a
+  ADR-9) con criterios de aceptación escritos y doce consumidores reales detrás.
+  Sin cambios rompientes previstos desde 0.10.0; a partir de aquí, deprecación
+  explícita antes que sorpresa (D3 deja de aplicar "puede romperse sin aviso").
+- No hay módulos nuevos: la semana 13 es de consolidación (D10). El bump es de
+  *estabilidad*, no de superficie.
+- Décimo consumidor: `binahco/evidence-api` (sem. 11) — el dashboard vivo de la
+  flota sobre `web-api-base`: `GET /evidence` sirve la página de evidencia (§10.1)
+  en vivo con `ci-pack.metrics` (sin `make validate`), `GET /fleet/status` expone
+  la matriz por-repo y `GET /fleet/digest` da el veredicto LLM validado
+  (`fleet-digest-generator` → `fleet-digest-v1`, caché TTL diaria). Composición
+  70/30: reutiliza siete módulos, cero módulos nuevos.
+- Undécimo consumidor: `binahco/docs-gen` (sem. 12) — sitio de documentación desde
+  los ADRs del core: `parser-io` normaliza cada ADR y el cuerpo de las páginas sale
+  **sin LLM**; la narrativa (tagline + blurb por ADR) es la única salida de modelo,
+  validada contra `site-digest-v1` (`site-digest-generator`). Render determinista.
+- Duodécimo consumidor: `binahco/core-smoke` (sem. 13) — smoke de publicación:
+  importa los diez paquetes públicos del core desde la distribución publicada y
+  falla si alguno no carga o la versión no es 1.x, más veredicto LLM validado
+  (`core-health-generator` → `core-health-v1`). Es el consumidor que **verifica el
+  v1.0.0 publicado** en vez de dogfoodear el árbol de trabajo.
+- La flota sigue en `llm-dev-core ^0.x` (semanas 2–12): el v1.0 se publica sin
+  obligar a los consumidores existentes a migrar; los nuevos pueden pedir `^1.0`
+  (como hace `core-smoke`). La matriz repo × versión queda mixta a propósito.
 
 ## v0.10 — 2026-10-01 (parser-io seed)
 

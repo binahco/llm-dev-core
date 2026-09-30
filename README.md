@@ -6,14 +6,14 @@ Núcleo versionado y publicado del que dependen 52 proyectos en 52 semanas: un s
 
 Toda llamada a un LLM pasa por `llm-client`, toda salida no confiable pasa por `schema-validate`, todo prompt vive en `prompt-registry`. Ver `ARCHITECTURE.md` para la tesis, las decisiones (D1–D12) y las métricas verificables.
 
-- **Estado:** v0.10 · Semana 10
+- **Estado:** v1.0 · Semana 13 (hito: 12 consumidores, contratos estables)
 - **Stack:** Python 3.12+ (ADR-0, `docs/decisions/0000-stack.md`)
 - **Estructura:** `packages/` (módulos), `templates/` (consumidor clonable), `scripts/` (verificación), `docs/`
-- **Empaquetado:** una sola dist `llm-dev-core` (D1): `llm_client`, `schema_validate`, `secure_base`, `test_kit`, `web_api_base`, `ci_pack`, `cache_ratelimit`, `bot_base` y `parser_io` top-level; los consumidores dependen de `llm-dev-core ^0.x`, nunca de módulos sueltos.
+- **Empaquetado:** una sola dist `llm-dev-core` (D1): `llm_client`, `schema_validate`, `secure_base`, `test_kit`, `web_api_base`, `ci_pack`, `cache_ratelimit`, `bot_base` y `parser_io` top-level; los consumidores dependen de la dist (`llm-dev-core`), nunca de módulos sueltos — `^0.x` los que nacieron antes del v1.0, `^1.0` los nuevos (`core-smoke`).
 
 ## Qué es (y qué no es)
 
-**Qué es:** una dist publicada (`llm-dev-core` ^0.x) que concentra el pipeline LLM de la
+**Qué es:** una dist publicada (`llm-dev-core`, estable desde v1.0) que concentra el pipeline LLM de la
 flota — llamadas, validación, seguridad, evals, web y caché/ritmo — sobre la que se montan
 los consumidores. Cada módulo es una hipótesis que solo pasa a diseño si varios
 consumidores la usan (la tesis del encabezado).
