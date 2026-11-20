@@ -1,6 +1,6 @@
 {
   "generado_por": "scripts/verification_baseline.py",
-  "generado_el": "2026-11-20T17:26:50",
+  "generado_el": "2026-11-20T17:52:20",
   "python": "3.12.13",
   "mediciones": {
     "slice_fidelity": {
@@ -268,8 +268,8 @@
       "clause": "ADR-3: 9 detectores; exactitud medida sobre corpus real y negativos duros",
       "files_scanned": 156,
       "excluded_pattern_definition_file": "packages/secure-base/src/secure_base/detectors.py",
-      "lines_scanned": 13643,
-      "lines_scanned_production": 8692,
+      "lines_scanned": 13647,
+      "lines_scanned_production": 8695,
       "findings_production": 0,
       "findings_production_by_type": {},
       "findings_in_tests": 43,

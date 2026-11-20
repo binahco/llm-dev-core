@@ -10,13 +10,13 @@ publicada (§7.3), no un fallo de la suite.
 
 | medición | tipo de cláusula | ancla | veredicto | evidencia medida | acción |
 | --- | --- | --- | --- | --- | --- |
-| parser_corpus | CRITERIO DE PROYECTO | `docs/verification/METODOLOGIA.md:106` | TRUE | 5800.9 docs/s (piso 40); 0.0076 s de mejor de 3 | — |
-| detect_lines | CRITERIO DE PROYECTO | `docs/verification/METODOLOGIA.md:106` | TRUE | 159682.6 líneas/s (piso 3500); 0.0458 s de mejor de 3 | — |
-| validate_text | CRITERIO DE PROYECTO | `docs/verification/METODOLOGIA.md:106` | TRUE | 558672.2 validaciones/s (piso 5000); 0.0036 s de mejor de 3 | — |
-| span_construction | CRITERIO DE PROYECTO | `docs/verification/METODOLOGIA.md:106` | TRUE | 360608.3 spans/s (piso 3000); 0.0139 s de mejor de 3 | — |
-| price_key | CRITERIO DE PROYECTO | `docs/verification/METODOLOGIA.md:106` | TRUE | 13539421.9 lookups/s (piso 75000); 0.0004 s de mejor de 3 | — |
-| ratelimiter | CRITERIO DE PROYECTO | `docs/verification/METODOLOGIA.md:106` | TRUE | 7060481.2 acquires/s (piso 60000); 0.0014 s de mejor de 3 | — |
-| cache_hit_scaling | CRITERIO DE PROYECTO | `docs/verification/METODOLOGIA.md:104`, `docs/verification/METODOLOGIA.md:110` | TRUE | 2.14 µs/hit con store=1 vs 1.8 µs/hit con store=2500 (ratio 0.8×, umbral 10×) sobre 2000 hits | — |
+| parser_corpus | CRITERIO DE PROYECTO | `docs/verification/METODOLOGIA.md:106` | TRUE | 5821.1 docs/s (piso 40); 0.0076 s de mejor de 3 | — |
+| detect_lines | CRITERIO DE PROYECTO | `docs/verification/METODOLOGIA.md:106` | TRUE | 156112.0 líneas/s (piso 3500); 0.0468 s de mejor de 3 | — |
+| validate_text | CRITERIO DE PROYECTO | `docs/verification/METODOLOGIA.md:106` | TRUE | 558821.7 validaciones/s (piso 5000); 0.0036 s de mejor de 3 | — |
+| span_construction | CRITERIO DE PROYECTO | `docs/verification/METODOLOGIA.md:106` | TRUE | 352960.9 spans/s (piso 3000); 0.0142 s de mejor de 3 | — |
+| price_key | CRITERIO DE PROYECTO | `docs/verification/METODOLOGIA.md:106` | TRUE | 13183914.4 lookups/s (piso 75000); 0.0004 s de mejor de 3 | — |
+| ratelimiter | CRITERIO DE PROYECTO | `docs/verification/METODOLOGIA.md:106` | TRUE | 6941836.4 acquires/s (piso 60000); 0.0014 s de mejor de 3 | — |
+| cache_hit_scaling | CRITERIO DE PROYECTO | `docs/verification/METODOLOGIA.md:104`, `docs/verification/METODOLOGIA.md:110` | TRUE | 1.88 µs/hit con store=1 vs 1.84 µs/hit con store=2500 (ratio 1.0×, umbral 10×) sobre 2000 hits | — |
 
 Totales: 7 `TRUE`, 0 `FALSE`.
 
