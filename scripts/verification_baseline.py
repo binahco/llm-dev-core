@@ -34,6 +34,7 @@ CONSUMERS = [
     "docs-gen",
     "core-smoke",
     "triage-bot",
+    "prompt-hub",
 ]
 
 
