@@ -34,7 +34,17 @@ class Detector:
 
 DETECTORS: tuple[Detector, ...] = (
     Detector("email", re.compile(r"\b[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Za-z]{2,}\b")),
-    Detector("phone", re.compile(r"(?<![\d.])(?:\+?\d{1,3}[-.\s]?)?\(?\d{3}\)?[-.\s]?\d{3}[-.\s]?\d{4}\b")),
+    Detector(
+        "phone",
+        re.compile(
+            r"(?<![\w.-])(?:"
+            r"\+\d{1,4}[-.\s]?\d{3}[-.\s]?\d{3}[-.\s]?\d{4}"  # +57 300 123 4567
+            r"|\(\d{3}\)[-.\s]?\d{3}[-.\s]?\d{4}"  # (300) 123 4567
+            r"|\d{3}[-.\s]\d{3}[-.\s]\d{4}"  # 300 123 4567 / 300-123-4567
+            r"|\d{3}[- ]\d{4,7}"  # 300 1234567 (sin punto: 100.1234567 es un decimal)
+            r")(?![\w-])"
+        ),
+    ),
     Detector("ipv4", re.compile(r"\b(?:\d{1,3}\.){3}\d{1,3}\b")),
     Detector("credit_card", re.compile(r"(?<![\d.])\b(?:\d{4}[ -]?){3}\d{4}\b")),
     Detector("aws_access_key", re.compile(r"\b(?:AKIA|ASIA)[A-Z0-9]{16}\b")),

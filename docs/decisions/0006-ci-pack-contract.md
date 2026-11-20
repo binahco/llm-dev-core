@@ -41,8 +41,22 @@ html = render(report)                          # → docs/metrics/evidence.html
   `uv sync --frozen` + replay. Reproduce el patrón que el retrofit #0 de la sem. 6
   copiaba a mano.
 - **`collect` lee fuentes de verdad, no promesas:** manifiestos `core-consumer.yml`
-  (reutilización y matriz repo × core), `prompts/` con su `eval` existente (cobertura)
-  y los spans de `llm-client` (costo y llamadas). De cada fuente que falte, cuenta cero.
+  (reutilización y matriz repo × core), `prompts/` con su `eval` existente (cobertura),
+  los spans de `llm-client` y los cassettes del repo (costo y llamadas). De cada fuente
+  que falte, cuenta cero.
+- **Un cero declara su procedencia (F3, v1.1).** La regla de arriba ("cuenta cero") es
+  correcta para el *conteo* y falsa para la *interpretación*: la tabla mostraba
+  `$0.0000` en las 12 filas y eso mezclaba tres cosas distintas. La página separa ahora
+  `llamadas (span)` de `llamadas (cassette)`, publica tokens in/out, y rotula el costo:
+  `(spans)`, `(cassette · modelo en tabla de precios)`, `costo desconocido` o
+  `sin datos de llamada`. El caso que motiva la cuarta etiqueta: `cost_usd` devuelve 0
+  para un modelo que no está en la tabla de precios, así que un modelo de pago sin
+  pricedar reportaba $0 y el cap de costo no disparaba. `llm_client.pricing` gana
+  `model_price_known()` y `price_key()` para separar "gratis" de "desconocido" y para
+  resolver el prefijo de proveedor (`opencode/big-pickle` → `big-pickle`).
+- **Un cassette no es un span.** Aporta `usage` real del proveedor pero no pasó por el
+  pipeline del core: no tiene `latency_ms` ni `retry_count`. Por eso van en columnas
+  separadas y no se suman en un único "llamadas".
 - **Dependencias hojas:** `llm-dev-client` (solo para el schema de `Span`) y
   `llm-dev-secure-base`. No depende de `test-kit` (el job solo lo *invoca* por CLI).
 

@@ -1,6 +1,6 @@
 [project]
 name = "llm-dev-core"
-version = "1.0.0"
+version = "1.1.0"
 description = "Núcleo versionado del que dependen 52 proyectos en 52 semanas: un solo sistema acumulativo."
 authors = [{ name = "binahco", email = "binahco.sas@gmail.com" }]
 requires-python = ">=3.12"
@@ -36,4 +36,4 @@ members = ["packages/*"]
 dev = ["pytest>=8,<9"]
 
 [tool.pytest.ini_options]
-testpaths = ["packages"]
+testpaths = ["packages", "tests"]

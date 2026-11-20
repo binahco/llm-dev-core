@@ -1,0 +1,491 @@
+{
+  "generado_por": "scripts/verification_baseline.py",
+  "generado_el": "2026-11-19T20:57:00",
+  "python": "3.12.13",
+  "mediciones": {
+    "slice_fidelity": {
+      "name": "slice_fidelity",
+      "clause": "ADR-9 §4: la rebanada (line_start, line_end) del original es el body de la sección",
+      "files": 42,
+      "docs_parsed": 42,
+      "docs_failed_to_parse": 0,
+      "parse_error_examples": [],
+      "sections": 190,
+      "sections_exact": 190,
+      "sections_lossy": 0,
+      "fidelity_pct": 100.0,
+      "naive_reading_mismatch": 190,
+      "lines_with_content_outside_sections": 417,
+      "headings_present_but_absent_from_result": 32,
+      "of_which_level1": 32,
+      "of_which_level2_plus": 0,
+      "lossy_examples": [],
+      "uncovered_examples": [
+        "../bench-runner/README.md: 2 líneas con contenido fuera de toda sección",
+        "../bench-runner/README.md: 1 heading(s) ausentes -> ['h1: bench-runner']",
+        "../bench-runner/prompts/regression-report-generator.md: 10 líneas con contenido fuera de toda sección",
+        "../bench-runner/prompts/regression-report-generator.md: 1 heading(s) ausentes -> ['h1: regression-report-generator']",
+        "../ci-scribe/README.md: 20 líneas con contenido fuera de toda sección",
+        "../ci-scribe/README.md: 1 heading(s) ausentes -> ['h1: ci-scribe']",
+        "../ci-scribe/prompts/eval-triage-generator.md: 6 líneas con contenido fuera de toda sección",
+        "../commit-cli/README.md: 2 líneas con contenido fuera de toda sección",
+        "../commit-cli/README.md: 1 heading(s) ausentes -> ['h1: commit-cli']",
+        "../commit-cli/prompts/commit-message-generator.md: 1 heading(s) ausentes -> ['h1: commit-message-generator']",
+        "../content-ray/README.md: 1 heading(s) ausentes -> ['h1: content-ray']",
+        "../core-smoke/README.md: 1 heading(s) ausentes -> ['h1: core-smoke']"
+      ]
+    },
+    "idempotence": {
+      "name": "parse_determinism",
+      "clause": "ADR-9: el mismo source + contenido produce el mismo ParsedDocument",
+      "identical": 42,
+      "different": 0
+    },
+    "empty_heading": {
+      "name": "empty_heading_handling",
+      "clause": "una sección sin cuerpo se conserva con body vacío y rango vacío (no pérdida silenciosa)",
+      "exception": null,
+      "sections_returned": [
+        "Sección vacía",
+        "Con contenido"
+      ],
+      "empty_section_preserved": true,
+      "empty_section_range_consistent": true,
+      "issue": null
+    },
+    "schema_enumeration": {
+      "name": "schema_enumeration",
+      "clause": "ADR-2 §2: validate_text acepta JSON puro, en caretas o con prosa; rechaza lo malformado",
+      "cases": 14,
+      "mismatches": 0,
+      "rows": [
+        {
+          "case": "§2 JSON puro",
+          "clause": "aceptado",
+          "expected_ok": true,
+          "got_ok": true,
+          "match": true,
+          "errors": []
+        },
+        {
+          "case": "§2 JSON en caretas",
+          "clause": "aceptado",
+          "expected_ok": true,
+          "got_ok": true,
+          "match": true,
+          "errors": []
+        },
+        {
+          "case": "§2 JSON con prosa",
+          "clause": "aceptado",
+          "expected_ok": true,
+          "got_ok": true,
+          "match": true,
+          "errors": []
+        },
+        {
+          "case": "§2 llave final ausente",
+          "clause": "rechazado",
+          "expected_ok": false,
+          "got_ok": false,
+          "match": true,
+          "errors": [
+            "JSON inválido: no se encontró JSON en la respuesta"
+          ]
+        },
+        {
+          "case": "§2 valor sin tipo",
+          "clause": "rechazado",
+          "expected_ok": false,
+          "got_ok": false,
+          "match": true,
+          "errors": [
+            "JSON inválido: Expecting value: line 1 column 23 (char 22)"
+          ]
+        },
+        {
+          "case": "§2 no es JSON válido (sin comillas)",
+          "clause": "rechazado",
+          "expected_ok": false,
+          "got_ok": false,
+          "match": true,
+          "errors": [
+            "JSON inválido: Expecting property name enclosed in double quotes: line 1 column 2 (char 1)"
+          ]
+        },
+        {
+          "case": "campo `count` ausente",
+          "clause": "rechazado",
+          "expected_ok": false,
+          "got_ok": false,
+          "match": true,
+          "errors": [
+            "count: Field required"
+          ]
+        },
+        {
+          "case": "`count` es string, no int",
+          "clause": "rechazado",
+          "expected_ok": false,
+          "got_ok": false,
+          "match": true,
+          "errors": [
+            "count: Input should be a valid integer, unable to parse string as an integer"
+          ]
+        },
+        {
+          "case": "`count` es null, no int",
+          "clause": "rechazado",
+          "expected_ok": false,
+          "got_ok": false,
+          "match": true,
+          "errors": [
+            "count: Input should be a valid integer"
+          ]
+        },
+        {
+          "case": "array en vez de objeto",
+          "clause": "rechazado",
+          "expected_ok": false,
+          "got_ok": false,
+          "match": true,
+          "errors": [
+            "<raiz>: Input should be a valid dictionary or instance of M"
+          ]
+        },
+        {
+          "case": "string en vez de objeto",
+          "clause": "rechazado",
+          "expected_ok": false,
+          "got_ok": false,
+          "match": true,
+          "errors": [
+            "<raiz>: Input should be a valid dictionary or instance of M"
+          ]
+        },
+        {
+          "case": "campo extra (Pydantic lo ignora)",
+          "clause": "aceptado",
+          "expected_ok": true,
+          "got_ok": true,
+          "match": true,
+          "errors": []
+        },
+        {
+          "case": "Pydantic laxo: 1 se acepta como True",
+          "clause": "aceptado",
+          "expected_ok": true,
+          "got_ok": true,
+          "match": true,
+          "errors": []
+        },
+        {
+          "case": "§2 recorte {..} con dos objetos",
+          "clause": "rechazado",
+          "expected_ok": false,
+          "got_ok": false,
+          "match": true,
+          "errors": [
+            "JSON inválido: Extra data: line 1 column 10 (char 9)"
+          ]
+        }
+      ],
+      "extract_json": [
+        {
+          "case": "§2 JSON puro",
+          "extracted_ok": true,
+          "note": "extract_json extrae, no valida el esquema"
+        },
+        {
+          "case": "§2 JSON en caretas",
+          "extracted_ok": true,
+          "note": "extract_json extrae, no valida el esquema"
+        },
+        {
+          "case": "§2 JSON con prosa",
+          "extracted_ok": true,
+          "note": "extract_json extrae, no valida el esquema"
+        },
+        {
+          "case": "§2 llave final ausente",
+          "extracted_ok": false,
+          "note": "extract_json extrae, no valida el esquema"
+        },
+        {
+          "case": "§2 valor sin tipo",
+          "extracted_ok": false,
+          "note": "extract_json extrae, no valida el esquema"
+        },
+        {
+          "case": "§2 no es JSON válido (sin comillas)",
+          "extracted_ok": false,
+          "note": "extract_json extrae, no valida el esquema"
+        },
+        {
+          "case": "campo `count` ausente",
+          "extracted_ok": true,
+          "note": "extract_json extrae, no valida el esquema"
+        },
+        {
+          "case": "`count` es string, no int",
+          "extracted_ok": true,
+          "note": "extract_json extrae, no valida el esquema"
+        },
+        {
+          "case": "`count` es null, no int",
+          "extracted_ok": true,
+          "note": "extract_json extrae, no valida el esquema"
+        },
+        {
+          "case": "array en vez de objeto",
+          "extracted_ok": true,
+          "note": "extract_json extrae, no valida el esquema"
+        },
+        {
+          "case": "string en vez de objeto",
+          "extracted_ok": false,
+          "note": "extract_json extrae, no valida el esquema"
+        },
+        {
+          "case": "campo extra (Pydantic lo ignora)",
+          "extracted_ok": true,
+          "note": "extract_json extrae, no valida el esquema"
+        },
+        {
+          "case": "Pydantic laxo: 1 se acepta como True",
+          "extracted_ok": true,
+          "note": "extract_json extrae, no valida el esquema"
+        },
+        {
+          "case": "§2 recorte {..} con dos objetos",
+          "extracted_ok": false,
+          "note": "extract_json extrae, no valida el esquema"
+        }
+      ]
+    },
+    "detectors": {
+      "name": "detectors_on_real_corpus",
+      "clause": "ADR-3: 9 detectores; exactitud medida sobre corpus real y negativos duros",
+      "files_scanned": 122,
+      "excluded_pattern_definition_file": "packages/secure-base/src/secure_base/detectors.py",
+      "lines_scanned": 10214,
+      "lines_scanned_production": 6548,
+      "findings_production": 0,
+      "findings_production_by_type": {},
+      "findings_in_tests": 37,
+      "findings_tests_by_type": {
+        "github_token": 10,
+        "email": 7,
+        "aws_access_key": 1,
+        "private_key": 1,
+        "url_userinfo": 1,
+        "bearer": 1,
+        "phone": 14,
+        "credit_card": 1,
+        "ipv4": 1
+      },
+      "false_positive_examples_production": [],
+      "findings_in_tests_examples": [
+        {
+          "file": "test_app.py",
+          "line": 89,
+          "type": "github_token",
+          "text": "secret = \"ghp_abcdefghijklmnopqrstuvwxyz123456\""
+        },
+        {
+          "file": "test_app.py",
+          "line": 103,
+          "type": "github_token",
+          "text": "assert \"ghp_abcdefghijklmnopqrstuvwxyz123456\" not in user"
+        },
+        {
+          "file": "test_app.py",
+          "line": 131,
+          "type": "github_token",
+          "text": "secret = \"ghp_abcdefghijklmnopqrstuvwxyz123456\""
+        },
+        {
+          "file": "test_app.py",
+          "line": 138,
+          "type": "github_token",
+          "text": "assert \"ghp_abcdefghijklmnopqrstuvwxyz123456\" not in user"
+        },
+        {
+          "file": "test_app.py",
+          "line": 104,
+          "type": "github_token",
+          "text": "secret = \"ghp_abcdefghijklmnopqrstuvwxyz123456\""
+        },
+        {
+          "file": "test_app.py",
+          "line": 117,
+          "type": "github_token",
+          "text": "assert \"ghp_abcdefghijklmnopqrstuvwxyz123456\" not in user"
+        },
+        {
+          "file": "test_ci_pack.py",
+          "line": 60,
+          "type": "github_token",
+          "text": "f.write_text(\"token = 'ghp_AbCdEfGhIjKlMnOpQrStUvWxYz123456'\\n\")"
+        },
+        {
+          "file": "test_secure_base.py",
+          "line": 6,
+          "type": "email",
+          "text": "SAMPLE = \"\"\"prueba con persona@ejemplo.com y también conta@otra.co"
+        },
+        {
+          "file": "test_secure_base.py",
+          "line": 6,
+          "type": "email",
+          "text": "SAMPLE = \"\"\"prueba con persona@ejemplo.com y también conta@otra.co"
+        },
+        {
+          "file": "test_secure_base.py",
+          "line": 7,
+          "type": "github_token",
+          "text": "token ghp_AbCdEfGhIjKlMnOpQrStUvWxYz123456"
+        },
+        {
+          "file": "test_secure_base.py",
+          "line": 8,
+          "type": "aws_access_key",
+          "text": "aws AKIAIOSFODNN7EXAMPLE en plena línea"
+        },
+        {
+          "file": "test_secure_base.py",
+          "line": 10,
+          "type": "private_key",
+          "text": "-----BEGIN RSA PRIVATE KEY-----"
+        }
+      ],
+      "hard_negative_flagged": {},
+      "hard_negative_size": 10,
+      "positive_set_detected": {
+        "github_token": true,
+        "aws_access_key": true,
+        "bearer": true,
+        "private_key": true,
+        "credit_card": true,
+        "email": true,
+        "url_userinfo": true,
+        "phone": true,
+        "ipv4": true
+      },
+      "positive_set_size": 9,
+      "detectors_declared": 9,
+      "note": "los fixtures de tests contienen secretos falsos deliberados: no cuentan como FP. la exactitud real queda acotada a 9 positivos y 10 negativos duros; no hay corpus de terceros."
+    },
+    "time_invariants": {
+      "name": "time_invariants",
+      "clause": "cache TTL (cache-ratelimit) y recurrencia (bot-base) con reloj inyectado",
+      "cache_calls_before_ttl": 1,
+      "cache_calls_after_ttl": 2,
+      "cache_ttl_respected": true,
+      "bucket_initial": 2.0,
+      "bucket_after_4_acquires": [
+        1.0,
+        0.0,
+        0.0,
+        0.0
+      ],
+      "bucket_after_10s": 2.0,
+      "bucket_monotone_decreasing": true,
+      "run_tasks_1": [
+        {
+          "task_id": "digest",
+          "status": "ok",
+          "detail": "hecho"
+        }
+      ],
+      "run_tasks_2": [
+        {
+          "task_id": "digest",
+          "status": "skipped",
+          "detail": "no debe aún"
+        }
+      ],
+      "run_tasks_after_90000s": [
+        {
+          "task_id": "digest",
+          "status": "ok",
+          "detail": "hecho"
+        }
+      ],
+      "task_invocations": 2,
+      "idempotent_same_day": true,
+      "skips_when_not_due": true,
+      "reruns_when_due": true
+    },
+    "span_contract": {
+      "name": "span_contract",
+      "clause": "ADR-1 §2: el span expone exactamente los campos que el ADR enumera",
+      "adr_line_of_list": 58,
+      "fields_expected_from_adr": 20,
+      "fields_in_code": 20,
+      "missing_in_code": [],
+      "extra_in_code": [],
+      "fields": 20,
+      "names": [
+        "span_id",
+        "trace_id",
+        "consumer_repo",
+        "prompt_id",
+        "prompt_version",
+        "model_alias",
+        "model",
+        "provider",
+        "tokens_input",
+        "tokens_output",
+        "latency_ms",
+        "cost_usd",
+        "retry_count",
+        "cache_hit",
+        "status",
+        "call_skipped",
+        "retry_unnecessary",
+        "error_type",
+        "repaired_attempts",
+        "timestamp"
+      ],
+      "matches_claim": true
+    },
+    "evidence_self_audit": {
+      "name": "evidence_self_audit",
+      "clause": "cada 0 de la página dice si es un costo medido o un dato ausente, y ninguna fila usa el precio de un modelo que la tabla de precios no conoce",
+      "consumers_in_page": 12,
+      "manifests_on_disk": 12,
+      "filas_con_datos_de_llamada": 12,
+      "filas_totales": 12,
+      "calls_spans": 0,
+      "calls_cassette": 40,
+      "tokens_in": 190004,
+      "tokens_out": 12393,
+      "filas_con_costo_desconocido": [],
+      "celdas_sin_procedencia": 0,
+      "cero_sin_explicacion": false,
+      "spans_dir_exists": false,
+      "nota": "las llamadas salen de cassettes (usage del proveedor), no de spans instrumentados; el costo se declara solo si el modelo está en la tabla"
+    },
+    "docs_claims": {
+      "name": "docs_claims_executable",
+      "clause": "toda cifra de contrato citada en un README coincide con el código o el disco",
+      "readmes": 12,
+      "cifras_por_categoria": {
+        "identificador": 27,
+        "cronologia": 23,
+        "puerto": 14,
+        "http": 13,
+        "contrato": 12,
+        "referencia": 6,
+        "fecha": 3
+      },
+      "claims_de_contrato": 12,
+      "claims_verificados": 12,
+      "claims_falsos": [],
+      "campos_span_en_codigo": 20,
+      "adrs_en_disco": 10,
+      "nota": "solo 'contrato' exige verificación; puerto, código HTTP, configuración, cronología, fecha y ejemplo se excluyen del criterio por no ser afirmaciones sobre el comportamiento"
+    }
+  }
+}

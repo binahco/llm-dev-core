@@ -2,6 +2,136 @@
 
 La versión es la del paquete `llm-dev-core`. El historial arranca con el **hito v1.0 (semana 13)**: hasta 0.10.0 el core era `0.x` y podía romperse sin aviso (D3); desde v1.0.0 los contratos son estables.
 
+## v1.1 — 2026-11-19 (verificación objetiva, semana 14, F0-F4)
+
+- **F0: baseline de verificación medible.** `scripts/verification_baseline.py` mide nueve
+  cláusulas contractuales contra artefactos reales y escribe `docs/verification/baseline.json`
+  más `docs/verification/BASELINE.md` (`make verify-baseline`). Ninguna cifra del informe está
+  escrita a mano: el veredicto se deriva de la medición.
+  Resultado inicial: 4 `TRUE`, 2 `PARCIAL`, 3 `FALSE`.
+- **F1: prueba de sensibilidad.** `scripts/verification_sensitivity.py` inyecta nueve
+  rupturas deliberadas (parse no determinista, body desplazado, validador permisivo,
+  detector que marca todo, `Schedule` siempre dispuesto, `Span` con 19 campos, …) y exige
+  que la medición correspondiente cambie. Las nueve se detectan; si alguna dejara de
+  detectarse, el script sale 1.
+- **F2: los tres defectos de código quedan pagos** (el baseline pasó de 4 `TRUE` a 7):
+  - `parser-io`: una sección Markdown sin cuerpo ya no desaparece en silencio. Se conserva
+    con `body == ""`, `body_tokens == 0` y `line_end == line_start`.
+  - `parser-io`: la ruta H1-fallback (documento sin H2) ahora respeta el mismo contrato de
+    líneas que la ruta H2 — `body == lines[line_start:line_end]` en el **100%** de las
+    secciones del corpus real (187/187, antes 184/186). El texto del heading ya no se
+    duplica dentro de `body` y el frontmatter de los prompts tampoco.
+  - `secure-base`: el detector `phone` exige forma escrita (`+`, paréntesis o separador).
+    Dejaba de marcar `uuid` y `epoch` como teléfono (2 de 10 negativos duros). El coste
+    asumido y documentado: un teléfono de 10 dígitos sin separador ya no se marca.
+  - ADR-3 §2 y ADR-9 §2 quedan actualizados con el contrato corregido y su oráculo.
+- Sin cambios rompientes para los consumidores: los 12 repos siguen verdes contra el core
+  modificado y `check_consumers` da OK en los 12.
+
+### F2.1 — el cierre del cierre
+
+Un cuestionamiento del propio F2 encontró cuatro huecos. Todos están pagos:
+
+- **Las cláusulas ya no son del instrumento.** `scripts/verification_clauses.py` registra,
+  por medición, el archivo y la línea del contrato que se cita, y su tipo lo decide
+  `git show v1.0.0:<archivo>` — no el autor. Resultado: 4 cláusulas `PREEXISTENTE`
+  (campos del span, tres formas de JSON, determinismo D4, TTL/ráfaga/idempotencia),
+  3 `DECISION v1.1` (contrato de líneas, heading sin cuerpo, forma escrita de `phone`)
+  y 2 `CRITERIO DE PROYECTO`, que viven ahora en `docs/verification/METODOLOGIA.md`.
+  Verificar una decisión de v1.1 no dice nada sobre el pasado: el informe lo dice.
+- **Cita falsa corregida.** El baseline citaba "ADR-1 §10" para los campos del span; §10
+  no existe (son §1–§6) y la lista está en la línea 58. La medición ya no hardcodea 20:
+  parsea esa lista del ADR y compara conjuntos, así que un campo nuevo o borrado se ve sin
+  editar el script.
+- **La autorreferencia de F0 queda escrita en el artefacto**, no solo en la conversación:
+  `BASELINE.md` incluye una sección *Historial de cláusulas* que admite que el `FALSE` de
+  F0 en `empty_heading` se apoyaba en una cláusula inventada.
+- **El trade-off de `phone` tiene ancla ejecutable.** `sec-check/tests/test_tradeoff.py`
+  fija las dos direcciones: `+57 300 123 4567` se redacta y `assert_redacted` lo ve;
+  `3001234567` sin separador pasa limpio, y el test lo declara hueco conocido.
+- **El sentinel `line_start == 0` lo cubre el consumidor.** `content-ray/src/content_ray/main.py`
+  renderiza `max(1, line_start)` para no imprimir `L0`, y tres tests nuevos fijan el panel,
+  el lookup de `--sample doc:1` y que los documentos con heading no cambian de rango.
+- Sensibilidad: la ruptura de `span_contract` pasó de "19 vs 20" a "falta `cost_usd`",
+  que es el fallo real ahora que el número sale del ADR.
+- 134 tests en el core (107 de v1.0), 78 en los 12 consumidores, `check_consumers` OK ×12.
+
+### F3 — los dos `FALSE` restantes, y por qué eran del instrumento
+
+Los dos `FALSE` de F2 no eran datos malos: eran criterios malos, y ninguno de los dos
+podía volverse `TRUE` nunca. El baseline queda en **9 `TRUE`, 0 `PARCIAL`, 0 `FALSE`**.
+
+- **`cost_usd` devolvía 0 para todo.** La tabla de precios tiene una sola entrada,
+  `big-pickle`, pero los cassettes registran `opencode/big-pickle`: el nombre no
+  coincidía, la búsqueda fallaba y caía al `(0.0, 0.0)` por defecto. Peor: ese
+  defecto silenciaba el caso grave — un modelo de pago sin pricedar reportaba $0 y
+  el cap de costo nunca disparaba. `llm_client.pricing` gana `price_key()` (resuelve
+  el prefijo de proveedor) y `model_price_known()`, que separa "gratis" de
+  "desconocido". El criterio de F0 (`$0.0000` en la página ⇒ `FALSE`) declaraba roto
+  un dato correcto: para `big-pickle` el 0 **sí** estaba medido.
+- **La página de evidencia separa los tres ceros que confundía.** Antes mostraba
+  `$0.0000` en las doce filas sin decir de dónde salía. Ahora separa `llamadas (span)`
+  de `llamadas (cassette)`, publica tokens in/out, y rotula cada costo:
+  `(spans)`, `(cassette · modelo en tabla de precios)`, `costo desconocido` o
+  `sin datos de llamada`. Un cassette no es un span: trae `usage` real del proveedor
+  pero no pasó por el pipeline del core, así que no tiene `latency_ms` ni
+  `retry_count` y no se suma en un único "llamadas". Resultado: 40 llamadas y
+  190 004 / 12 393 tokens que antes no aparecían en ninguna parte.
+- **`evidence-api` y `fleet-bot` rotulan el costo** con la misma regla, y sus README
+  se actualizaron con la salida real (12 consumidores, no 10).
+- **`docs_claims` ya no depende de una constante.** F0 fijaba
+  `verificado_por_ejecucion: 0` escrito a mano, así que el veredicto no dependía de
+  nada medido. Ahora la cifra se clasifica antes de exigirle una ejecución: de las
+  98 de los 12 READMEs, 12 son claims de contrato y 12 coinciden con su oráculo;
+  las otras 86 son puertos, códigos HTTP, fechas, porcentajes, transcripciones o
+  números de semana, que no afirman nada sobre el comportamiento del sistema.
+- **Dos README tenían cifras falsas** y el oráculo las cazó: `content-ray` decía
+  "12 ADRs" cuando hay 10, y `core-smoke` decía "107 tests" cuando ya no eran 107.
+  La segunda no se corrige poniéndole el número nuevo: se sustituye por el comando,
+  porque un conteo de tests envejece igual de rápido. La metodología dice ahora que
+  una cifra de contrato que depende de un número cambiante se escribe como comando.
+- **Las rupturas de F1 seguían mintiendo.** `evidence_self_audit` y `docs_claims`
+  fijaban claves que la medición reescrita ya no usaba, así que "pasaban" sin
+  comprobar nada. Ahora el harness nombra cada ruptura por la medición que rompe
+  (`idempotence`, no `parse_determinism`) y un test exige que toda medición tenga la
+  suya y que siga detectándola. La de `evidence_self_audit` cambió de sentido: ahora
+  rompe con un modelo fuera de la tabla de precios, que es el fallo real.
+- ADR-6 §2 registra el cambio de contrato: "de cada fuente que falte, cuenta cero"
+  sigue valiendo para el conteo y era falsa para la interpretación.
+- 152 tests en el core, 78 en los 12 consumidores, `check_consumers` OK ×12,
+  sensibilidad 10/10.
+
+### F4 — "optimizado" gana oráculo: la forma es contrato, el número no
+
+La pregunta "¿está optimizado?" no tenía respuesta verificable: §4 del baseline
+excluía la calidad y ninguna cifra medía velocidad. `scripts/verification_perf.py`
+(`make verify-perf`) abre esa dimensión bajo tres reglas nuevas
+(`docs/verification/METODOLOGIA.md` §7):
+
+1. **Un tiempo absoluto no es contrato** (depende del hardware): lo verificable es
+   la forma — el coste de una operación O(1) no crece con el estado.
+2. **Pisos de guardarrail ~100× por debajo de lo medido** para seis operaciones del
+   camino caliente (parser, detectores, validación, span, precio, rate-limit): solo
+   una regresión estructural los rompe.
+3. **La deuda visible vale más que el verde fingido**: un `FALSE` crónico se publica
+   con su acción abierta.
+
+Resultado inicial: **6 `TRUE`, 1 `FALSE`**. El `FALSE` es `cache_hit_scaling`: el
+coste de un hit de `CachedProvider` crece con el tamaño del store (1.8 µs con 1
+entrada vs ~45 µs con 2 500; ratio ~25×, umbral 10×) porque `_prune` escanea todo el
+diccionario en cada `complete()`. Fix registrado en el issue #1 (sem. 15); ningún
+contrato del baseline se rompe por eso.
+
+- Siete cláusulas nuevas en `scripts/verification_clauses.py`, todas
+  `CRITERIO DE PROYECTO` ancladas a §7 (el tag v1.0.0 no contiene esas líneas).
+- El test del registro de cláusulas pasa de igualdad exacta a subconjunto: el
+  registro ya tiene dos familias (contratos y perf) y cada una exige la suya.
+- `docs/verification/{perf.json,PERF.md}` se escriben en cada corrida; el JSON de
+  perf no es sync-testeable (los tiempos varían), así que la suite exige estructura,
+  veredictos derivados de la medición y anclas — no cifras congeladas.
+- 156 tests en el core (152 de F3 + 4 de perf), baseline regenerado con el corpus
+  ampliado (su corpus incluye los scripts y tests nuevos, como manda su contrato).
+
 ## v1.0 — 2026-10-08 (hito v1.0, semana 13)
 
 - **Primer semver mayor: los contratos pasan a estables.** Diez módulos (ADR-0 a

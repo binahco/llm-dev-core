@@ -129,3 +129,59 @@ def test_documento_consistente_y_con_token_budget(tmp_path: Path) -> None:
     assert isinstance(doc, ParsedDocument)
     assert doc.approx_tokens > 0
     assert all(s.body_tokens > 0 for s in doc.sections)
+
+# --- F2: contrato de líneas y secciones vacías (verificación objetiva) ---
+
+VACIA = """\
+# Título
+
+## Sección vacía
+
+## Con contenido
+
+texto real.
+"""
+
+
+def test_seccion_sin_cuerpo_se_conserva_con_rango_vacio() -> None:
+    """Una sección vacía es información: no puede desaparecer del resultado."""
+    doc = parse_markdown(VACIA, source="docs/vacia.md")
+    assert [s.title for s in doc.sections] == ["Sección vacía", "Con contenido"]
+    vacia = doc.sections[0]
+    assert vacia.body == ""
+    assert vacia.body_tokens == 0
+    assert vacia.line_end == vacia.line_start
+
+
+def test_body_es_siempre_la_rebanada_del_archivo() -> None:
+    """Invariante del ADR-9 §2: body == lines[line_start:line_end]."""
+    docs = {
+        "secciones": MD,
+        "vacias": VACIA,
+        "solo_h1": "# Solo H1\n\nprimer parrafo\nsegundo parrafo\n",
+        "sin_heading": "texto plano\nsin ningun heading\n",
+    }
+    for nombre, texto in docs.items():
+        lineas = texto.splitlines()
+        doc = parse_markdown(texto, source=f"docs/{nombre}.md")
+        for s in doc.sections:
+            rebanada = "\n".join(lineas[s.line_start : s.line_end])
+            assert rebanada.strip() == s.body.strip(), f"{nombre}/{s.title}"
+
+
+def test_documento_sin_h2_usa_la_seccion_implicita_sin_duplicar_el_h1() -> None:
+    """La ruta H1-fallback respeta el mismo contrato que la ruta H2."""
+    texto = "---\nid: x\n---\n\n# {id}\n\ncuerpo real\n"
+    doc = parse_markdown(texto, source="prompts/x.md")
+    assert len(doc.sections) == 1
+    s = doc.sections[0]
+    assert s.line_start == 5
+    assert s.body == "cuerpo real"
+    assert "# {id}" not in s.body
+
+
+def test_token_budget_refleja_el_cuerpo_real(tmp_path: Path) -> None:
+    path = tmp_path / "m.md"
+    path.write_text(VACIA)
+    doc = parse(path)
+    assert [s.body_tokens for s in doc.sections] == [0, approx_tokens("texto real.")]

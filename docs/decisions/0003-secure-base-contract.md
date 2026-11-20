@@ -34,6 +34,12 @@ class Finding(BaseModel):
 - **`Finding.match` es un preview truncado**: suficiente para triaje, insuficiente para re-inyectar el secreto.
 - **`detect` es no destructivo**: el scanner se usa antes de decidir qué se envía; `redact` produce la salida
   que sí puede cruzar el límite del prompt.
+- **`phone` exige forma escrita (corregido en v1.1, F2):** prefijo `+`, paréntesis
+  o un separador interno. Una tirada de 10 dígitos desnuda (`1725000000`) y los
+  últimos dígitos de un UUID se contaban como teléfono; el baseline los medía como
+  falsos positivos (2 de 10 negativos duros). El intercambio es explícito: se
+  pierde `llama al 3001234567` sin separador, y esa es una decisión medida, no
+  accidental. Oráculo: `scripts/verification_baseline.py` (`detectors`).
 
 ## 3. Perfil y lints (§3.1.1 → ci-pack)
 

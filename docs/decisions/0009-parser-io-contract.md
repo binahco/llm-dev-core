@@ -55,6 +55,23 @@ source = iter_documents("corpus/")                 # list[Path] determinista
   necesite de verdad (D9, `scraper`).
 - **El lector captura, no opina:** tablas como `Table` y también dentro del
   `body` de su sección; el consumidor elige qué pasar al prompt.
+- **Contrato de líneas (corregido en v1.1, F2):** `line_start` es la línea del
+  heading y `line_end` la última línea con contenido, de modo que el `body` es
+  exactamente `"\n".join(lines[line_start:line_end])` con el relleno exterior
+  recortado. El texto del heading vive en `title`, nunca dentro de `body`, y la
+  ruta H1-fallback (documento sin H2+) respeta la misma regla.
+- **`line_start == 0` es una señal, no una línea:** la línea 0 no existe en un
+  archivo, así que el valor 0 significa "este documento no tiene heading y `body`
+  arranca en la línea 1". Un consumidor que renderice el rango debe acotarlo con
+  `max(1, line_start)` en vez de imprimir `L0`; `content-ray` lo hace y lo prueba.
+- **Un heading sin cuerpo no es ruido:** se conserva con `body == ""`,
+  `body_tokens == 0` y `line_end == line_start`. Antes se descartaba en silencio
+  (el `except ValueError: continue` silenciaba además el rango vacío), que es
+  pérdida de información sin aviso.
+- **Lo que sigue siendo pérdida, y declarada:** las líneas que no pertenecen a
+  ninguna sección (frontmatter, H1, preámbulo antes del primer H2) no aparecen
+  en `sections[]`. El baseline mide cuántas son en cada repositorio en vez de
+  fingir cobertura total.
 
 ## 3. Qué NO contrata este documento
 
@@ -76,3 +93,9 @@ source = iter_documents("corpus/")                 # list[Path] determinista
 - [x] `approx_tokens` determinista; `iter_documents` determinista y recursivo.
 - [x] Primer consumidor real: `content-ray` (sem. 10) — escanea los `.md` de
       `llm-dev-core`, ventanas por sección y digest LLM validado.
+- [x] (v1.1) Invariante verificable: `body == lines[line_start:line_end]` en el
+      100% de las secciones del corpus real, por las dos rutas.
+      Oráculo: `scripts/verification_baseline.py` (`slice_fidelity`).
+- [x] (v1.1) Un heading sin cuerpo sobrevive con rango vacío y `body_tokens == 0`.
+      Oráculo: `scripts/verification_baseline.py` (`empty_heading`) y
+      `packages/parser-io/tests/test_parser_io.py`.

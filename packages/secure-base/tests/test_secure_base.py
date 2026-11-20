@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+import pytest
 from secure_base import SecurityProfile, assert_redacted, detect, redact, sanitize_for_prompt
 
 SAMPLE = """prueba con persona@ejemplo.com y también conta@otra.co
@@ -82,3 +83,34 @@ def test_detect_reports_offset_and_line() -> None:
     email = next(f for f in findings if f.type == "email")
     assert email.offset == SAMPLE.find("persona@ejemplo.com")
     assert SAMPLE.count("\n", 0, email.offset) + 1 == 1
+
+# --- F2: precisión del detector phone (medido: uuid y epoch se marcaban) ---
+
+TELEFONOS = [
+    "+57 300 123 4567",
+    "+1 555 123 4567",
+    "(300) 123 4567",
+    "300 123 4567",
+    "300-123-4567",
+    "300 1234567",
+]
+
+NO_TELEFONOS = [
+    "id: 550e8400-e29b-41d4-a716-446655440000",
+    "epoch 1725000000",
+    "llama al 3001234567",
+    "linea 100.1234567",
+    "precio 1234.56",
+    "sha1 da39a3ee5e6b4b0d3255bfef95601890afd80709",
+    "llm-dev-core==1.0.0",
+]
+
+
+@pytest.mark.parametrize("texto", TELEFONOS)
+def test_detecta_telefonos_en_formatos_escritos(texto: str) -> None:
+    assert "phone" in {f.type for f in detect(texto)}
+
+
+@pytest.mark.parametrize("texto", NO_TELEFONOS)
+def test_no_detecta_telefono_en_identificadores(texto: str) -> None:
+    assert "phone" not in {f.type for f in detect(texto)}

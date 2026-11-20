@@ -92,6 +92,75 @@ class TestMetrics:
         assert "Página de evidencia" in html
         assert "alpha" in html and "beta" in html
 
+    def test_cassettes_dan_llamadas_y_tokens(self, tmp_path: Path) -> None:
+        """Sin spans guardados, las grabaciones siguen siendo datos de llamada."""
+        repo = _consumer(tmp_path, "gamma", 3)
+        cdir = repo / "cassettes"
+        cdir.mkdir()
+        entry = json.dumps(
+            {
+                "model": "opencode/big-pickle",
+                "request": [{"role": "user", "content": "hola"}],
+                "response": {
+                    "text": "hola",
+                    "model": "opencode/big-pickle",
+                    "usage": {"input_tokens": 120, "output_tokens": 8},
+                },
+            }
+        )
+        (cdir / "complete-opencode--big-pickle-1.jsonl").write_text(entry + "\n" + entry + "\n")
+
+        report = collect([repo])
+        row = report.weeks[0]
+        assert row.calls == 0, "no hay spans: el contador de spans debe seguir en 0"
+        assert row.cassette_calls == 2
+        assert (row.tokens_in, row.tokens_out) == (240, 16)
+        assert report.total_cassette_calls == 2
+        assert report.rows_with_unknown_model == []
+
+    def test_modelo_fuera_de_la_tabla_no_se_presenta_como_gratis(self, tmp_path: Path) -> None:
+        """Un 0 por modelo desconocido no es un costo medido y la página lo dice."""
+        repo = _consumer(tmp_path, "delta", 4)
+        cdir = repo / "cassettes"
+        cdir.mkdir()
+        (cdir / "tape.jsonl").write_text(
+            json.dumps(
+                {
+                    "model": "pago-inventado",
+                    "request": [{"role": "user", "content": "x"}],
+                    "response": {"text": "y", "model": "pago-inventado", "usage": {"input_tokens": 5, "output_tokens": 1}},
+                }
+            )
+            + "\n"
+        )
+
+        report = collect([repo])
+        assert report.rows_with_unknown_model == ["delta"]
+        html = render(report)
+        assert "costo desconocido" in html
+        assert "sin datos de llamada" not in html, "hay cassettes: no es un repo sin datos"
+
+    def test_repo_sin_spans_ni_cassettes_lo_dice(self, tmp_path: Path) -> None:
+        report = collect([_consumer(tmp_path, "epsilon", 5)])
+        assert report.total_cassette_calls == 0
+        assert "sin datos de llamada" in render(report)
+
+    def test_cassette_corrupto_no_rompe_la_coleccion(self, tmp_path: Path) -> None:
+        repo = _consumer(tmp_path, "zeta", 6)
+        cdir = repo / "cassettes"
+        cdir.mkdir()
+        good = json.dumps(
+            {
+                "model": "opencode/big-pickle",
+                "request": [{"role": "user", "content": "x"}],
+                "response": {"text": "y", "model": "opencode/big-pickle", "usage": {"input_tokens": 10, "output_tokens": 2}},
+            }
+        )
+        (cdir / "tape.jsonl").write_text("esto no es json\n" + good + "\n")
+        report = collect([repo])
+        assert report.weeks[0].cassette_calls == 1
+        assert (report.weeks[0].tokens_in, report.weeks[0].tokens_out) == (10, 2)
+
 
 class TestJobs:
     def test_workflow_yaml_parsea_y_clona_el_core(self) -> None:

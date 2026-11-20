@@ -80,8 +80,11 @@ def parse_markdown(text: str, *, source: str) -> ParsedDocument:
         title = source.rsplit("/", 1)[-1].split(".", 1)[0]
 
     def section_from_range(level: int, heading_title: str, start: int, end: int) -> Section:
-        # Contenido 1-based start+1 .. end (end = siguiente heading del mismo
-        # nivel o superior, excluido); líneas de relleno se recortan.
+        # Contrato de líneas (ADR-9 §2): `line_start` es la línea del heading y el
+        # `body` es el texto de las líneas `line_start+1 .. line_end`, con el relleno
+        # exterior recortado. Equivale a `"\n".join(lines[line_start:line_end])`.
+        # `line_start == 0` significa que el documento no tiene heading y `body`
+        # arranca en la línea 1.
         body_lines = list(lines[start:end])
         trailing = 0
         while body_lines and not body_lines[-1].strip():
@@ -90,7 +93,16 @@ def parse_markdown(text: str, *, source: str) -> ParsedDocument:
         while body_lines and not body_lines[0].strip():
             body_lines.pop(0)
         if not body_lines:
-            raise ValueError("sección sin contenido")
+            # Un heading sin cuerpo es información, no ruido: se conserva con el
+            # rango vacío en vez de desaparecer del resultado.
+            return Section(
+                anchor=_slug(heading_title),
+                title=heading_title,
+                line_start=start,
+                line_end=start,
+                body="",
+                body_tokens=0,
+            )
         new_end = end - trailing
         text_body = "\n".join(body_lines)
         return Section(
@@ -111,28 +123,17 @@ def parse_markdown(text: str, *, source: str) -> ParsedDocument:
             if headings[j][0] <= level:
                 end = headings[j][2] - 1
                 break
-        if end <= start:
+        if end < start:
             continue
-        try:
-            sections.append(section_from_range(level, heading_title, start, end))
-        except ValueError:
-            continue
+        sections.append(section_from_range(level, heading_title, start, end))
 
     if not sections:
-        # Documento sin headings: una sección implícita con todo el contenido.
-        parts = [ln for ln in lines if ln.strip()]
-        if not parts:
+        # Documento sin secciones H2+: una sección implícita que respeta el mismo
+        # contrato de líneas (empieza tras el H1, o en la línea 1 si no hay heading).
+        if not text.strip():
             raise ParseError("markdown vacío", source=source, line=1)
-        sections.append(
-            Section(
-                anchor=_slug(title),
-                title=title,
-                line_start=1,
-                line_end=len(lines),
-                body="\n".join(parts),
-                body_tokens=approx_tokens("\n".join(parts)),
-            )
-        )
+        start = h1[0][2] if h1 else 0
+        sections.append(section_from_range(1, title, start, len(lines)))
 
     return ParsedDocument(
         source=source,
