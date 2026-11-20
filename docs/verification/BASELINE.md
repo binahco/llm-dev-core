@@ -13,15 +13,15 @@ el texto ya estaba en el tag, `DECISION v1.1` que lo escribió este trabajo, y
 
 | medición | tipo de cláusula | ancla | veredicto | evidencia medida | acción |
 | --- | --- | --- | --- | --- | --- |
-| slice_fidelity | DECISION v1.1 | `docs/decisions/0009-parser-io-contract.md:58` | TRUE | 224/224 secciones (100.0%) cumplen body == lines[line_start:line_end]; 532 líneas con contexto fuera de toda sección; 37 H1 y 0 H2+ ausentes del resultado | — |
-| idempotence | PREEXISTENTE | `docs/decisions/0009-parser-io-contract.md:50` | TRUE | 51/51 documentos idénticos en dos parses del mismo archivo | — |
+| slice_fidelity | DECISION v1.1 | `docs/decisions/0009-parser-io-contract.md:58` | TRUE | 231/231 secciones (100.0%) cumplen body == lines[line_start:line_end]; 556 líneas con contexto fuera de toda sección; 38 H1 y 0 H2+ ausentes del resultado | — |
+| idempotence | PREEXISTENTE | `docs/decisions/0009-parser-io-contract.md:50` | TRUE | 53/53 documentos idénticos en dos parses del mismo archivo | — |
 | empty_heading | DECISION v1.1 | `docs/decisions/0009-parser-io-contract.md:67` | TRUE | excepción=None; secciones devueltas=['Sección vacía', 'Con contenido']; sección vacía conservada=True, rango coherente=True | — |
 | schema_enumeration | PREEXISTENTE | `docs/decisions/0002-schema-validate-contract.md:37` | TRUE | 14/14 entradas clasificadas como espera ADR-2 §2 | — |
-| detectors | DECISION v1.1 | `docs/decisions/0003-secure-base-contract.md:22`, `docs/decisions/0003-secure-base-contract.md:37` | TRUE | 9/9 positivos; 0 hallazgos en 7787 líneas de producción; 0/10 negativos duros marcados | — |
+| detectors | DECISION v1.1 | `docs/decisions/0003-secure-base-contract.md:22`, `docs/decisions/0003-secure-base-contract.md:37` | TRUE | 9/9 positivos; 0 hallazgos en 8051 líneas de producción; 0/10 negativos duros marcados | — |
 | time_invariants | PREEXISTENTE | `docs/decisions/0007-cache-ratelimit-contract.md:21`, `docs/decisions/0007-cache-ratelimit-contract.md:50`, `docs/decisions/0008-bot-base-contract.md:72` | TRUE | TTL respetado=True; bucket 2.0→2.0; run_tasks 1ª=ok, 2ª=skipped, tras 90.000 s=ok | — |
 | span_contract | PREEXISTENTE | `docs/decisions/0001-llm-client-contract.md:58` | TRUE | 20 campos en código contra 20 enumerados en ADR-1 §2 (línea 58); faltan=[], sobran=[] | — |
-| evidence_self_audit | CRITERIO DE PROYECTO | `docs/verification/METODOLOGIA.md:52`, `docs/decisions/0006-ci-pack-contract.md:47` | TRUE | 16 filas, 16 con datos de llamada: 52 en cassettes + 0 con span; 379677 tokens in / 13687 out; filas con costo desconocido=0 | — |
-| docs_claims | CRITERIO DE PROYECTO | `docs/verification/METODOLOGIA.md:29`, `docs/verification/METODOLOGIA.md:35` | TRUE | 16 cifras de contrato en 16 READMEs, 16 coinciden con su oráculo y 0 son falsas; el resto de cifras son {'identificador': 37, 'cronologia': 35, 'contrato': 16, 'http': 15, 'puerto': 14, 'referencia': 7, 'fecha': 6} y no son claims | — |
+| evidence_self_audit | CRITERIO DE PROYECTO | `docs/verification/METODOLOGIA.md:52`, `docs/decisions/0006-ci-pack-contract.md:47` | TRUE | 17 filas, 17 con datos de llamada: 55 en cassettes + 0 con span; 427335 tokens in / 14056 out; filas con costo desconocido=0 | — |
+| docs_claims | CRITERIO DE PROYECTO | `docs/verification/METODOLOGIA.md:29`, `docs/verification/METODOLOGIA.md:35` | TRUE | 17 cifras de contrato en 17 READMEs, 17 coinciden con su oráculo y 0 son falsas; el resto de cifras son {'identificador': 44, 'cronologia': 37, 'contrato': 17, 'http': 15, 'puerto': 14, 'referencia': 7, 'fecha': 6} y no son claims | — |
 
 Totales: 9 `TRUE`, 0 `PARCIAL`, 0 `FALSE`.
 

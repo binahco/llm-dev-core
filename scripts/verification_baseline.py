@@ -37,6 +37,7 @@ CONSUMERS = [
     "prompt-hub",
     "smoke-bot",
     "cassette-diff",
+    "adr-index",
 ]
 
 
