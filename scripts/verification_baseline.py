@@ -39,6 +39,7 @@ CONSUMERS = [
     "cassette-diff",
     "adr-index",
     "checklist-walker",
+    "release-walker",
 ]
 
 
