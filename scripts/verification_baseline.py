@@ -38,6 +38,7 @@ CONSUMERS = [
     "smoke-bot",
     "cassette-diff",
     "adr-index",
+    "checklist-walker",
 ]
 
 
