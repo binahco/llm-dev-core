@@ -202,7 +202,10 @@ class TestF3CeroConProcedencia:
         assert "llamadas (cassette)" in html and "llamadas (span)" in html
         assert "tokens in/out" in html
         assert "costo desconocido" in html, "la leyenda debe explicar el cuarto estado"
-        assert "40 llamadas grabadas en cassettes" in html
+        # El conteo no se pega a mano: la página debe coincidir con la medición,
+        # que crece con cada cassette nuevo de la flota (lección de F3).
+        ev = vb.m_evidence_self_audit()
+        assert f"{ev['calls_cassette']} llamadas grabadas en cassettes" in html
 
 
 def test_cada_ruptura_del_harness_cubre_una_medicion() -> None:

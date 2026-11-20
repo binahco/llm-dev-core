@@ -33,6 +33,7 @@ CONSUMERS = [
     "evidence-api",
     "docs-gen",
     "core-smoke",
+    "triage-bot",
 ]
 
 
