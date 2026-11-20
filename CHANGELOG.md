@@ -2,6 +2,23 @@
 
 La versión es la del paquete `llm-dev-core`. El historial arranca con el **hito v1.0 (semana 13)**: hasta 0.10.0 el core era `0.x` y podía romperse sin aviso (D3); desde v1.0.0 los contratos son estables.
 
+## v1.1.1 — 2026-11-19 (semana 15, issue #1)
+
+- **cache-ratelimit: la poda del `CachedProvider` es amortizada.** `_prune` escaneaba
+  todo el store en cada `complete()` (issue #1): el hit costaba 1.8 µs con una entrada
+  y 45 µs con 2 500 (ratio 25×). Ahora la poda corre a lo sumo una vez por ventana de
+  `ttl/2` y el coste del hit deja de crecer con el tamaño del store: **ratio 1.0×**
+  medido por `make verify-perf` — la cláusula `cache_hit_scaling` pasa a `TRUE` y el
+  baseline de rendimiento queda en **7 `TRUE`, 0 `FALSE`**.
+- Sin cambio de contrato observable: una entrada vencida nunca se devuelve (la
+  frescura siempre se comprueba por entrada); solo puede quedar en memoria hasta la
+  próxima poda (~1.5×`ttl`). ADR-7 §2 queda enmendado con la decisión y su medición,
+  sin tocar la línea del ancla preexistente.
+- El test de poda existente sigue verde sin editar; uno nuevo fija la cadencia
+  (ventana cerrada ⇒ no poda) y la frescura por entrada (vencida pedida ⇒ miss fresco).
+- 157 tests en el core, 79 en los 12 consumidores — todos verdes contra el core
+  modificado, `check_consumers` OK ×12.
+
 ## v1.1 — 2026-11-19 (verificación objetiva, semana 14, F0-F4)
 
 - **F0: baseline de verificación medible.** `scripts/verification_baseline.py` mide nueve

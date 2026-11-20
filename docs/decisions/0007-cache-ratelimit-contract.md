@@ -48,7 +48,11 @@ cliente, si se usa); el `CachedProvider` no toca el span.
 - **Los streams existen pero no se cachean:** para un flujo de tokens, cachear el primer
   chunk no sirve; v1 los deja pasar con su token del bucket y cuenta miss.
 - **Poda por expiración:** TTL por entrada; `complete` poda vencidos de paso (sin
-  background thread, sin busy-wait).
+background thread, sin busy-wait). Desde v1.1.1 (issue #1) la poda es **amortizada**:
+a lo sumo una por ventana de `ttl/2`, porque podar en *cada* llamada hacía el hit
+O(n) en el tamaño del store (medido: 1.8 µs con 1 entrada vs 45 µs con 2 500). Una
+entrada vencida nunca se devuelve —la frescura se comprueba por entrada— pero puede
+quedar en memoria hasta la próxima poda (~1.5×`ttl`).
 
 ## 3. Qué NO contrata este documento
 

@@ -138,6 +138,28 @@ class TestCachedProvider:
         provider.complete(make_request("model-c"))
         assert len(provider._store) == 1
 
+    def test_poda_amortizada_y_frescura_por_entrada(self) -> None:
+        # Ventana de poda = ttl/2 = 5 s (issue #1): el hit no paga el escaneo del
+        # store en cada llamada, pero una vencida nunca se devuelve.
+        clock = FakeClock()
+        inner = StubProvider()
+        provider = CachedProvider(inner, ttl_seconds=10.0, clock=clock)
+        provider.complete(make_request("a"))          # t=0
+        clock.now = 5.0
+        provider.complete(make_request("b"))          # puerta abre (5≥5): nada vencido aún
+        clock.now = 10.0
+        provider.complete(make_request("c"))          # puerta abre: 'a' vence exacto (no >10), se conserva
+        clock.now = 12.0
+        provider.complete(make_request("d"))          # puerta cerrada (2<5): 'a' vencida sigue en memoria
+        assert len(provider._store) == 4
+        provider.complete(make_request("a"))          # vencida: miss fresco aunque la poda no corrió
+        assert inner.calls == 5
+        assert provider.hits == 0
+        clock.now = 16.0
+        provider.complete(make_request("e"))          # puerta abre (6≥5): poda a 'b' (venció en 15)
+        assert inner.calls == 6
+        assert len(provider._store) == 4              # a(12), c, d, e — 'b' fue podada
+
     def test_llaves_distintas_por_modelo(self) -> None:
         clock = FakeClock()
         inner = StubProvider()

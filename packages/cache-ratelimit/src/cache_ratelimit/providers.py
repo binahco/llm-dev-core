@@ -41,6 +41,11 @@ class CachedProvider:
 
     La clave cubre modelo + mensajes + temperature + max_tokens; el reloj se
     inyecta para tests deterministas.
+
+    La poda es amortizada (issue #1, v1.1.1): `complete` poda a lo sumo una vez por
+    ventana de `ttl/2` — podar en cada llamada hacía el hit O(n) en el tamaño del
+    store. Una entrada vencida nunca se devuelve (la frescura se comprueba por
+    entrada), pero puede quedar en memoria hasta la próxima poda (~1.5×`ttl`).
     """
 
     def __init__(
@@ -56,6 +61,8 @@ class CachedProvider:
         self.ttl_seconds = ttl_seconds
         self._clock = clock if clock is not None else RealClock()
         self._store: dict[str, tuple[float, ProviderResponse]] = {}
+        self._prune_interval = ttl_seconds / 2.0
+        self._last_prune = self._clock.monotonic()
         self.name = f"cached:{inner.name}"
         self.hits = 0
         self.misses = 0
@@ -78,7 +85,11 @@ class CachedProvider:
 
     def complete(self, request: ProviderRequest) -> ProviderResponse:
         now = self._clock.monotonic()
-        self._prune(now)
+        # Poda amortizada: la puerta abre a lo sumo una vez por ventana de ttl/2,
+        # así el hit no paga el escaneo del store en cada llamada (issue #1).
+        if now - self._last_prune >= self._prune_interval:
+            self._prune(now)
+            self._last_prune = now
         key = self._key(request)
         entry = self._store.get(key)
         if entry is not None:

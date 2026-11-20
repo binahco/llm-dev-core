@@ -1,6 +1,6 @@
 {
   "generado_por": "scripts/verification_baseline.py",
-  "generado_el": "2026-11-19T20:57:00",
+  "generado_el": "2026-11-19T21:14:29",
   "python": "3.12.13",
   "mediciones": {
     "slice_fidelity": {
@@ -10,11 +10,11 @@
       "docs_parsed": 42,
       "docs_failed_to_parse": 0,
       "parse_error_examples": [],
-      "sections": 190,
-      "sections_exact": 190,
+      "sections": 191,
+      "sections_exact": 191,
       "sections_lossy": 0,
       "fidelity_pct": 100.0,
-      "naive_reading_mismatch": 190,
+      "naive_reading_mismatch": 191,
       "lines_with_content_outside_sections": 417,
       "headings_present_but_absent_from_result": 32,
       "of_which_level1": 32,
@@ -268,8 +268,8 @@
       "clause": "ADR-3: 9 detectores; exactitud medida sobre corpus real y negativos duros",
       "files_scanned": 122,
       "excluded_pattern_definition_file": "packages/secure-base/src/secure_base/detectors.py",
-      "lines_scanned": 10214,
-      "lines_scanned_production": 6548,
+      "lines_scanned": 10247,
+      "lines_scanned_production": 6559,
       "findings_production": 0,
       "findings_production_by_type": {},
       "findings_in_tests": 37,
