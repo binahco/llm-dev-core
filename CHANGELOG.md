@@ -1,5 +1,20 @@
 # Changelog
 
+## v1.3.0 — 2026-11-20 (semana 21, C13)
+
+- **`agent-loop` (C13, ADR-11): el loop mínimo con puerta humana.** Proponer
+  (cerebro inyectado), confirmar (`confirm` antes de cada efecto), ejecutar
+  (herramientas con nombre), registrar (trace auditable). El error de una herramienta
+  no mata la corrida; el rechazo termina sin insistir; el presupuesto de pasos es
+  visible (`paro="presupuesto"`), no un timeout.
+- La hoja no cambia: `agent-loop` no depende de ningún módulo del core ni llama
+  modelos — como `bot-base`, el determinismo es por construcción (D4) y el cerebro
+  (un cierre sobre `LlmClient`, o un guion en tests) se compone en el consumidor.
+- Primer consumidor: `checklist-walker` (sem. 21), que camina un checklist sobre un
+  repo real con herramientas de lectura (`exists/read/grep`) y reporta con LLM
+  validado.
+- 172 tests en el core (165 + 7 de agent-loop).
+
 ## v1.2.0 — 2026-11-20 (semana 19, C12)
 
 - **`diff-engine` (C12, ADR-10): comparación estructural determinista.** Nace vencida
