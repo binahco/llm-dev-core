@@ -11,6 +11,8 @@ import subprocess
 import sys
 from pathlib import Path
 
+import pytest
+
 ROOT = Path(__file__).resolve().parents[1]
 SCRIPTS = ROOT / "scripts"
 sys.path.insert(0, str(SCRIPTS))
@@ -28,6 +30,13 @@ CLAVES = [
     "evidence_self_audit",
     "docs_claims",
 ]
+
+# El baseline es una foto del árbol CON la flota (sus READMEs, prompts y src están en
+# el corpus). En CI la flota no existe — el runner solo tiene este repo — y la foto
+# local no puede sincronizar contra nada. Esos tests exigen flota local; el resto
+# (contratos, sensibilidad, anclas) corre en cualquier lado.
+FLOTA_LOCAL = all((ROOT.parent / name).is_dir() for name in vb.CONSUMERS)
+sin_flota = pytest.mark.skipif(not FLOTA_LOCAL, reason="sin la flota local no hay foto del árbol que sincronizar (CI)")
 
 
 def test_toda_medicion_produce_dato() -> None:
@@ -67,6 +76,7 @@ def test_cada_clausula_detecta_su_ruptura() -> None:
     assert "NO VE" not in salida.stderr, salida.stderr
 
 
+@sin_flota
 def test_salida_del_baseline_es_json_reproducible() -> None:
     primera = json.loads((ROOT / "docs" / "verification" / "baseline.json").read_text())
     segunda: dict = {}
@@ -129,6 +139,7 @@ def test_el_informe_declara_la_autorreferencia_de_f0() -> None:
     assert "inventé" in informe
 
 
+@sin_flota
 class TestF3CifrasVerificables:
     """F3: una cifra de README se verifica contra su oráculo, o no es un claim."""
 
@@ -169,8 +180,13 @@ class TestF3CifrasVerificables:
         assert not spans
 
 
+@sin_flota
 class TestF3CeroConProcedencia:
-    """Un 0 que no dice de dónde viene mezcla costo gratis con dato ausente."""
+    """Un 0 que no dice de dónde viene mezcla costo gratis con dato ausente.
+
+    Sin flota local la página que genera CI está vacía: las garantías de esta clase
+    serían vacuamente ciertas y no probarían nada."""
+
 
     def test_cero_de_evidencia_no_se_confunde_con_costo_desconocido(self) -> None:
         ev = vb.m_evidence_self_audit()

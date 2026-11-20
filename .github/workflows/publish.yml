@@ -13,6 +13,9 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0   # las cláusulas leen `git show v1.0.0:` — hace falta historia
+          fetch-tags: true
       - uses: astral-sh/setup-uv@v6
         with:
           python-version-file: .python-version
