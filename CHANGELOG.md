@@ -1,5 +1,21 @@
 # Changelog
 
+## v1.2.0 — 2026-11-20 (semana 19, C12)
+
+- **`diff-engine` (C12, ADR-10): comparación estructural determinista.** Nace vencida
+  (su seed estaba calendariado en la sem. 19 junto a la verificación que pagó esa
+  semana) y con su primer consumidor: `cassette-diff`, que mide la **deriva del
+  modelo** entre dos grabaciones del mismo prompt con la misma entrada (demo real:
+  similitud 0.6283, un hunk, `drift_menor`).
+- Contrato del módulo (ADR-10): `diff_records` campo a campo con **volátiles
+  declarados y listados** (timestamp, ids y latencias no son deriva; esconder que se
+  ignoran, sí sería mentir), `diff_text` en hunks `cambiada/agregada/eliminada`,
+  `text_similarity` en [0, 1]. Determinista por construcción (difflib, D4); la hoja
+  no cambia: stdlib + pydantic, sin dependencias del core.
+- Qué NO es: similitud semántica — eso es `vector-core` (C11), que **sigue vencida
+  desde la sem. 16** (deuda registrada en el issue #2).
+- 165 tests en el core (157 + 8 de diff-engine).
+
 La versión es la del paquete `llm-dev-core`. El historial arranca con el **hito v1.0 (semana 13)**: hasta 0.10.0 el core era `0.x` y podía romperse sin aviso (D3); desde v1.0.0 los contratos son estables.
 
 ## v1.1.1 — 2026-11-19 (semana 15, issue #1)

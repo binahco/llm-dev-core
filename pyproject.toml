@@ -1,6 +1,6 @@
 [project]
 name = "llm-dev-core"
-version = "1.1.1"
+version = "1.2.0"
 description = "Núcleo versionado del que dependen 52 proyectos en 52 semanas: un solo sistema acumulativo."
 authors = [{ name = "binahco", email = "binahco.sas@gmail.com" }]
 requires-python = ">=3.12"
@@ -27,6 +27,7 @@ packages = [
     "packages/cache-ratelimit/src/cache_ratelimit",
     "packages/bot-base/src/bot_base",
     "packages/parser-io/src/parser_io",
+    "packages/diff-engine/src/diff_engine",
 ]
 
 [tool.uv.workspace]
