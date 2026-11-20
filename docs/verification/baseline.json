@@ -1,23 +1,23 @@
 {
   "generado_por": "scripts/verification_baseline.py",
-  "generado_el": "2026-11-20T12:06:43",
+  "generado_el": "2026-11-20T15:11:06",
   "python": "3.12.13",
   "mediciones": {
     "slice_fidelity": {
       "name": "slice_fidelity",
       "clause": "ADR-9 §4: la rebanada (line_start, line_end) del original es el body de la sección",
-      "files": 48,
-      "docs_parsed": 48,
+      "files": 51,
+      "docs_parsed": 51,
       "docs_failed_to_parse": 0,
       "parse_error_examples": [],
-      "sections": 212,
-      "sections_exact": 212,
+      "sections": 224,
+      "sections_exact": 224,
       "sections_lossy": 0,
       "fidelity_pct": 100.0,
-      "naive_reading_mismatch": 212,
-      "lines_with_content_outside_sections": 492,
-      "headings_present_but_absent_from_result": 35,
-      "of_which_level1": 35,
+      "naive_reading_mismatch": 224,
+      "lines_with_content_outside_sections": 532,
+      "headings_present_but_absent_from_result": 37,
+      "of_which_level1": 37,
       "of_which_level2_plus": 0,
       "lossy_examples": [],
       "uncovered_examples": [
@@ -25,20 +25,20 @@
         "../bench-runner/README.md: 1 heading(s) ausentes -> ['h1: bench-runner']",
         "../bench-runner/prompts/regression-report-generator.md: 10 líneas con contenido fuera de toda sección",
         "../bench-runner/prompts/regression-report-generator.md: 1 heading(s) ausentes -> ['h1: regression-report-generator']",
+        "../cassette-diff/README.md: 22 líneas con contenido fuera de toda sección",
+        "../cassette-diff/README.md: 1 heading(s) ausentes -> ['h1: cassette-diff']",
+        "../cassette-diff/prompts/drift-narrator.md: 6 líneas con contenido fuera de toda sección",
         "../ci-scribe/README.md: 20 líneas con contenido fuera de toda sección",
         "../ci-scribe/README.md: 1 heading(s) ausentes -> ['h1: ci-scribe']",
-        "../ci-scribe/prompts/eval-triage-generator.md: 6 líneas con contenido fuera de toda sección",
-        "../commit-cli/README.md: 2 líneas con contenido fuera de toda sección",
         "../commit-cli/README.md: 1 heading(s) ausentes -> ['h1: commit-cli']",
         "../commit-cli/prompts/commit-message-generator.md: 1 heading(s) ausentes -> ['h1: commit-message-generator']",
-        "../content-ray/README.md: 1 heading(s) ausentes -> ['h1: content-ray']",
-        "../core-smoke/README.md: 1 heading(s) ausentes -> ['h1: core-smoke']"
+        "../content-ray/README.md: 1 heading(s) ausentes -> ['h1: content-ray']"
       ]
     },
     "idempotence": {
       "name": "parse_determinism",
       "clause": "ADR-9: el mismo source + contenido produce el mismo ParsedDocument",
-      "identical": 48,
+      "identical": 51,
       "different": 0
     },
     "empty_heading": {
@@ -266,15 +266,15 @@
     "detectors": {
       "name": "detectors_on_real_corpus",
       "clause": "ADR-3: 9 detectores; exactitud medida sobre corpus real y negativos duros",
-      "files_scanned": 134,
+      "files_scanned": 141,
       "excluded_pattern_definition_file": "packages/secure-base/src/secure_base/detectors.py",
-      "lines_scanned": 11640,
-      "lines_scanned_production": 7398,
+      "lines_scanned": 12228,
+      "lines_scanned_production": 7787,
       "findings_production": 0,
       "findings_production_by_type": {},
-      "findings_in_tests": 40,
+      "findings_in_tests": 41,
       "findings_tests_by_type": {
-        "github_token": 13,
+        "github_token": 14,
         "email": 7,
         "aws_access_key": 1,
         "private_key": 1,
@@ -286,6 +286,12 @@
       },
       "false_positive_examples_production": [],
       "findings_in_tests_examples": [
+        {
+          "file": "test_app.py",
+          "line": 88,
+          "type": "github_token",
+          "text": "a = write_tape(tmp_path, \"a.jsonl\", [{\"text\": \"token ghp_AbCdEfGhIjKlMnOpQrStUvW"
+        },
         {
           "file": "test_app.py",
           "line": 89,
@@ -351,12 +357,6 @@
           "line": 8,
           "type": "aws_access_key",
           "text": "aws AKIAIOSFODNN7EXAMPLE en plena línea"
-        },
-        {
-          "file": "test_secure_base.py",
-          "line": 10,
-          "type": "private_key",
-          "text": "-----BEGIN RSA PRIVATE KEY-----"
         }
       ],
       "hard_negative_flagged": {},
@@ -453,14 +453,14 @@
     "evidence_self_audit": {
       "name": "evidence_self_audit",
       "clause": "cada 0 de la página dice si es un costo medido o un dato ausente, y ninguna fila usa el precio de un modelo que la tabla de precios no conoce",
-      "consumers_in_page": 15,
-      "manifests_on_disk": 15,
-      "filas_con_datos_de_llamada": 15,
-      "filas_totales": 15,
+      "consumers_in_page": 16,
+      "manifests_on_disk": 16,
+      "filas_con_datos_de_llamada": 16,
+      "filas_totales": 16,
       "calls_spans": 0,
-      "calls_cassette": 49,
-      "tokens_in": 332170,
-      "tokens_out": 13474,
+      "calls_cassette": 52,
+      "tokens_in": 379677,
+      "tokens_out": 13687,
       "filas_con_costo_desconocido": [],
       "celdas_sin_procedencia": 0,
       "cero_sin_explicacion": false,
@@ -470,21 +470,21 @@
     "docs_claims": {
       "name": "docs_claims_executable",
       "clause": "toda cifra de contrato citada en un README coincide con el código o el disco",
-      "readmes": 15,
+      "readmes": 16,
       "cifras_por_categoria": {
-        "identificador": 34,
-        "cronologia": 33,
-        "contrato": 17,
+        "identificador": 37,
+        "cronologia": 35,
+        "contrato": 16,
         "http": 15,
         "puerto": 14,
-        "referencia": 6,
+        "referencia": 7,
         "fecha": 6
       },
-      "claims_de_contrato": 17,
-      "claims_verificados": 17,
+      "claims_de_contrato": 16,
+      "claims_verificados": 16,
       "claims_falsos": [],
       "campos_span_en_codigo": 20,
-      "adrs_en_disco": 10,
+      "adrs_en_disco": 11,
       "nota": "solo 'contrato' exige verificación; puerto, código HTTP, configuración, cronología, fecha y ejemplo se excluyen del criterio por no ser afirmaciones sobre el comportamiento"
     }
   }

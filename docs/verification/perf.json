@@ -1,53 +1,53 @@
 {
   "generado_por": "scripts/verification_perf.py",
-  "generado_el": "2026-11-20T12:06:44",
+  "generado_el": "2026-11-20T15:11:07",
   "python": "3.12.13",
   "mediciones": {
     "parser_corpus": {
-      "docs": 42,
-      "secciones": 191,
-      "segundos": 0.0066,
-      "docs_por_segundo": 6336.6,
+      "docs": 43,
+      "secciones": 196,
+      "segundos": 0.0071,
+      "docs_por_segundo": 6039.9,
       "piso_docs_por_segundo": 40
     },
     "detect_lines": {
-      "archivos": 122,
-      "lineas_produccion": 7041,
+      "archivos": 125,
+      "lineas_produccion": 7165,
       "hallazgos": 47,
-      "segundos": 0.0421,
-      "lineas_por_segundo": 167258.7,
+      "segundos": 0.0443,
+      "lineas_por_segundo": 161732.4,
       "piso_lineas_por_segundo": 3500
     },
     "validate_text": {
       "validaciones": 2000,
       "validas": 2000,
       "segundos": 0.0036,
-      "validaciones_por_segundo": 560394.1,
+      "validaciones_por_segundo": 560184.9,
       "piso_validaciones_por_segundo": 5000
     },
     "span_construction": {
       "spans": 5000,
-      "segundos": 0.0142,
-      "spans_por_segundo": 352973.4,
+      "segundos": 0.014,
+      "spans_por_segundo": 357191.7,
       "piso_spans_por_segundo": 3000
     },
     "price_key": {
       "lookups": 5000,
       "segundos": 0.0004,
-      "lookups_por_segundo": 12922671.0,
+      "lookups_por_segundo": 12871403.6,
       "piso_lookups_por_segundo": 75000
     },
     "ratelimiter": {
       "acquires": 10000,
       "segundos": 0.0014,
-      "acquires_por_segundo": 6984254.5,
+      "acquires_por_segundo": 7017750.7,
       "piso_acquires_por_segundo": 60000
     },
     "cache_hit_scaling": {
       "store_grande": 2500,
       "store_chico": 1,
       "hits_medidos": 2000,
-      "us_por_hit_store_1": 1.73,
+      "us_por_hit_store_1": 1.74,
       "us_por_hit_store_2500": 1.79,
       "ratio_coste": 1.0,
       "umbral_ratio": 10

@@ -36,6 +36,7 @@ CONSUMERS = [
     "triage-bot",
     "prompt-hub",
     "smoke-bot",
+    "cassette-diff",
 ]
 
 
