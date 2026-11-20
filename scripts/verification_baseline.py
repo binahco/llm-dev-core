@@ -35,6 +35,7 @@ CONSUMERS = [
     "core-smoke",
     "triage-bot",
     "prompt-hub",
+    "smoke-bot",
 ]
 
 
