@@ -40,6 +40,7 @@ CONSUMERS = [
     "adr-index",
     "checklist-walker",
     "release-walker",
+    "prompt-twins",
 ]
 
 
