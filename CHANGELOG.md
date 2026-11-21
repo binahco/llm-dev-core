@@ -1,5 +1,19 @@
 # Changelog
 
+## v1.4.0 — 2026-11-21 (semana 23, C11)
+
+- **`vector-core` (C11, ADR-12): embedder inyectable + búsqueda por coseno.** Paga la
+  deuda más vieja del calendario (sembrada para la 16, registrada en el issue #2).
+  `LexicalEmbedder` (bolsa de palabras hasheada, sha256 con semilla fija — nunca el
+  `hash()` nativo salado) y `VectorStore` con `search`/`pairs` por coseno en [0, 1].
+- **La regla de honestidad del módulo:** el embedder por defecto es **léxico, no
+  semántico** — `opencode/big-pickle` no expone embeddings (verificado) y aquí no se
+  finge significado. Un embedder real entra por el protocolo `EmbeddingProvider`
+  sin tocar el store ni los consumidores.
+- Primer consumidor: `prompt-twins` (sem. 23) — encuentra prompts casi-duplicados en
+  la flota (la familia de digests debería aparecer) y narra cada par con LLM validado.
+- 180 tests en el core (172 + 8 de vector-core).
+
 ## v1.3.0 — 2026-11-20 (semana 21, C13)
 
 - **`agent-loop` (C13, ADR-11): el loop mínimo con puerta humana.** Proponer
