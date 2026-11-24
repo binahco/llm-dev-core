@@ -1,6 +1,6 @@
 # Baseline de rendimiento (METODOLOGIA §7)
 
-Generado por `scripts/verification_perf.py` el 2026-11-21.
+Generado por `scripts/verification_perf.py` el 2026-11-23.
 Artefacto de datos: `docs/verification/perf.json` (se escribe en cada ejecución).
 
 La forma es contrato y el número no (§7.1): seis pisos de guardarrail (§7.2) y una
@@ -10,13 +10,13 @@ publicada (§7.3), no un fallo de la suite.
 
 | medición | tipo de cláusula | ancla | veredicto | evidencia medida | acción |
 | --- | --- | --- | --- | --- | --- |
-| parser_corpus | CRITERIO DE PROYECTO | `docs/verification/METODOLOGIA.md:106` | TRUE | 5749.1 docs/s (piso 40); 0.0078 s de mejor de 3 | — |
-| detect_lines | CRITERIO DE PROYECTO | `docs/verification/METODOLOGIA.md:106` | TRUE | 162737.3 líneas/s (piso 3500); 0.0458 s de mejor de 3 | — |
-| validate_text | CRITERIO DE PROYECTO | `docs/verification/METODOLOGIA.md:106` | TRUE | 581839.3 validaciones/s (piso 5000); 0.0034 s de mejor de 3 | — |
-| span_construction | CRITERIO DE PROYECTO | `docs/verification/METODOLOGIA.md:106` | TRUE | 347768.6 spans/s (piso 3000); 0.0144 s de mejor de 3 | — |
-| price_key | CRITERIO DE PROYECTO | `docs/verification/METODOLOGIA.md:106` | TRUE | 13437860.4 lookups/s (piso 75000); 0.0004 s de mejor de 3 | — |
-| ratelimiter | CRITERIO DE PROYECTO | `docs/verification/METODOLOGIA.md:106` | TRUE | 7036059.5 acquires/s (piso 60000); 0.0014 s de mejor de 3 | — |
-| cache_hit_scaling | CRITERIO DE PROYECTO | `docs/verification/METODOLOGIA.md:104`, `docs/verification/METODOLOGIA.md:110` | TRUE | 1.74 µs/hit con store=1 vs 1.76 µs/hit con store=2500 (ratio 1.0×, umbral 10×) sobre 2000 hits | — |
+| parser_corpus | CRITERIO DE PROYECTO | `docs/verification/METODOLOGIA.md:106` | TRUE | 5760.9 docs/s (piso 40); 0.0078 s de mejor de 3 | — |
+| detect_lines | CRITERIO DE PROYECTO | `docs/verification/METODOLOGIA.md:106` | TRUE | 157366.6 líneas/s (piso 3500); 0.0474 s de mejor de 3 | — |
+| validate_text | CRITERIO DE PROYECTO | `docs/verification/METODOLOGIA.md:106` | TRUE | 556147.7 validaciones/s (piso 5000); 0.0036 s de mejor de 3 | — |
+| span_construction | CRITERIO DE PROYECTO | `docs/verification/METODOLOGIA.md:106` | TRUE | 339613.3 spans/s (piso 3000); 0.0147 s de mejor de 3 | — |
+| price_key | CRITERIO DE PROYECTO | `docs/verification/METODOLOGIA.md:106` | TRUE | 13593126.9 lookups/s (piso 75000); 0.0004 s de mejor de 3 | — |
+| ratelimiter | CRITERIO DE PROYECTO | `docs/verification/METODOLOGIA.md:106` | TRUE | 6943842.0 acquires/s (piso 60000); 0.0014 s de mejor de 3 | — |
+| cache_hit_scaling | CRITERIO DE PROYECTO | `docs/verification/METODOLOGIA.md:104`, `docs/verification/METODOLOGIA.md:110` | TRUE | 1.82 µs/hit con store=1 vs 1.77 µs/hit con store=2500 (ratio 1.0×, umbral 10×) sobre 2000 hits | — |
 
 Totales: 7 `TRUE`, 0 `FALSE`.
 

@@ -41,6 +41,7 @@ CONSUMERS = [
     "checklist-walker",
     "release-walker",
     "prompt-twins",
+    "doc-oracle",
 ]
 
 

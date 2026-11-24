@@ -1,6 +1,6 @@
 # Baseline de verificación (F0-F2.1)
 
-Generado por `scripts/verification_baseline.py` el 2026-11-21.
+Generado por `scripts/verification_baseline.py` el 2026-11-23.
 Artefacto de datos: `docs/verification/baseline.json` (se escribe en cada ejecución).
 
 Cada fila cita el archivo y la línea del contrato que mide, el tipo de esa cláusula, el
@@ -13,15 +13,15 @@ el texto ya estaba en el tag, `DECISION v1.1` que lo escribió este trabajo, y
 
 | medición | tipo de cláusula | ancla | veredicto | evidencia medida | acción |
 | --- | --- | --- | --- | --- | --- |
-| slice_fidelity | DECISION v1.1 | `docs/decisions/0009-parser-io-contract.md:58` | TRUE | 262/262 secciones (100.0%) cumplen body == lines[line_start:line_end]; 657 líneas con contexto fuera de toda sección; 43 H1 y 0 H2+ ausentes del resultado | — |
-| idempotence | PREEXISTENTE | `docs/decisions/0009-parser-io-contract.md:50` | TRUE | 61/61 documentos idénticos en dos parses del mismo archivo | — |
+| slice_fidelity | DECISION v1.1 | `docs/decisions/0009-parser-io-contract.md:58` | TRUE | 269/269 secciones (100.0%) cumplen body == lines[line_start:line_end]; 703 líneas con contexto fuera de toda sección; 44 H1 y 0 H2+ ausentes del resultado | — |
+| idempotence | PREEXISTENTE | `docs/decisions/0009-parser-io-contract.md:50` | TRUE | 63/63 documentos idénticos en dos parses del mismo archivo | — |
 | empty_heading | DECISION v1.1 | `docs/decisions/0009-parser-io-contract.md:67` | TRUE | excepción=None; secciones devueltas=['Sección vacía', 'Con contenido']; sección vacía conservada=True, rango coherente=True | — |
 | schema_enumeration | PREEXISTENTE | `docs/decisions/0002-schema-validate-contract.md:37` | TRUE | 14/14 entradas clasificadas como espera ADR-2 §2 | — |
-| detectors | DECISION v1.1 | `docs/decisions/0003-secure-base-contract.md:22`, `docs/decisions/0003-secure-base-contract.md:37` | TRUE | 9/9 positivos; 0 hallazgos en 9061 líneas de producción; 0/10 negativos duros marcados | — |
+| detectors | DECISION v1.1 | `docs/decisions/0003-secure-base-contract.md:22`, `docs/decisions/0003-secure-base-contract.md:37` | TRUE | 9/9 positivos; 0 hallazgos en 9934 líneas de producción; 0/10 negativos duros marcados | — |
 | time_invariants | PREEXISTENTE | `docs/decisions/0007-cache-ratelimit-contract.md:21`, `docs/decisions/0007-cache-ratelimit-contract.md:50`, `docs/decisions/0008-bot-base-contract.md:72` | TRUE | TTL respetado=True; bucket 2.0→2.0; run_tasks 1ª=ok, 2ª=skipped, tras 90.000 s=ok | — |
 | span_contract | PREEXISTENTE | `docs/decisions/0001-llm-client-contract.md:58` | TRUE | 20 campos en código contra 20 enumerados en ADR-1 §2 (línea 58); faltan=[], sobran=[] | — |
-| evidence_self_audit | CRITERIO DE PROYECTO | `docs/verification/METODOLOGIA.md:52`, `docs/decisions/0006-ci-pack-contract.md:47` | TRUE | 20 filas, 20 con datos de llamada: 64 en cassettes + 0 con span; 566701 tokens in / 14870 out; filas con costo desconocido=0 | — |
-| docs_claims | CRITERIO DE PROYECTO | `docs/verification/METODOLOGIA.md:29`, `docs/verification/METODOLOGIA.md:35` | TRUE | 20 cifras de contrato en 20 READMEs, 20 coinciden con su oráculo y 0 son falsas; el resto de cifras son {'identificador': 49, 'cronologia': 45, 'contrato': 20, 'http': 15, 'referencia': 14, 'puerto': 14, 'fecha': 6} y no son claims | — |
+| evidence_self_audit | CRITERIO DE PROYECTO | `docs/verification/METODOLOGIA.md:52`, `docs/decisions/0006-ci-pack-contract.md:47` | TRUE | 21 filas, 21 con datos de llamada: 67 en cassettes + 0 con span; 614932 tokens in / 15297 out; filas con costo desconocido=0 | — |
+| docs_claims | CRITERIO DE PROYECTO | `docs/verification/METODOLOGIA.md:29`, `docs/verification/METODOLOGIA.md:35` | TRUE | 20 cifras de contrato en 21 READMEs, 20 coinciden con su oráculo y 0 son falsas; el resto de cifras son {'identificador': 57, 'cronologia': 56, 'contrato': 20, 'referencia': 15, 'http': 15, 'puerto': 14, 'fecha': 9} y no son claims | — |
 
 Totales: 9 `TRUE`, 0 `PARCIAL`, 0 `FALSE`.
 
