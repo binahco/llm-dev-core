@@ -1,5 +1,24 @@
 # Changelog
 
+## v1.5.0 — 2026-11-23 (semana 25, C14)
+
+- **`auth-base` (C14, ADR-13): acceso por clave de API con permisos exactos.** Es la capa
+  que `web-api-base` dejó fuera a propósito (ADR-5) y que cuatro consumidores esperaban
+  desde sus limitaciones (`eval-api`, `llm-gateway`, `evidence-api`, `prompt-hub`):
+  responde quién llama y si puede hacerlo antes de cada ruta, y falla cerrado.
+- **La regla del módulo:** el secreto se muestra una vez y no se guarda — el store
+  conserva `sha256` y compara en tiempo constante, y un store vacío no deja entrar a
+  nadie. Permisos por pertenencia exacta (sin comodines), reloj inyectable para el
+  vencimiento y un `AuthEvent` por intento, con la razón fina para quien opera y nunca
+  para quien llama.
+- La hoja no cambia: `KeyStore` es stdlib + pydantic y no conoce HTTP; `register_auth` y
+  `require` se enchufan a una app de `web-api-base` sin tocarla — 401 con
+  `WWW-Authenticate: Bearer`, 403 con el permiso que falta, cuerpo de error uniforme.
+- Primer consumidor: `key-gate` (sem. 25) — el gateway `POST /llm` de `llm-gateway` con
+  acceso por clave, límite de ritmo por cliente y registro de accesos, narrado con LLM
+  validado.
+- 193 tests en el core (180 + 13 de auth-base).
+
 ## v1.4.0 — 2026-11-21 (semana 23, C11)
 
 - **`vector-core` (C11, ADR-12): embedder inyectable + búsqueda por coseno.** Paga la
