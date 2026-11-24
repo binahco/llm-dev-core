@@ -1,23 +1,23 @@
 {
   "generado_por": "scripts/verification_baseline.py",
-  "generado_el": "2026-11-23T22:14:20",
+  "generado_el": "2026-11-23T22:17:10",
   "python": "3.12.13",
   "mediciones": {
     "slice_fidelity": {
       "name": "slice_fidelity",
       "clause": "ADR-9 §4: la rebanada (line_start, line_end) del original es el body de la sección",
-      "files": 63,
-      "docs_parsed": 63,
+      "files": 66,
+      "docs_parsed": 66,
       "docs_failed_to_parse": 0,
       "parse_error_examples": [],
-      "sections": 269,
-      "sections_exact": 269,
+      "sections": 281,
+      "sections_exact": 281,
       "sections_lossy": 0,
       "fidelity_pct": 100.0,
-      "naive_reading_mismatch": 269,
-      "lines_with_content_outside_sections": 703,
-      "headings_present_but_absent_from_result": 44,
-      "of_which_level1": 44,
+      "naive_reading_mismatch": 281,
+      "lines_with_content_outside_sections": 749,
+      "headings_present_but_absent_from_result": 46,
+      "of_which_level1": 46,
       "of_which_level2_plus": 0,
       "lossy_examples": [],
       "uncovered_examples": [
@@ -38,7 +38,7 @@
     "idempotence": {
       "name": "parse_determinism",
       "clause": "ADR-9: el mismo source + contenido produce el mismo ParsedDocument",
-      "identical": 63,
+      "identical": 66,
       "different": 0
     },
     "empty_heading": {
@@ -266,20 +266,20 @@
     "detectors": {
       "name": "detectors_on_real_corpus",
       "clause": "ADR-3: 9 detectores; exactitud medida sobre corpus real y negativos duros",
-      "files_scanned": 172,
+      "files_scanned": 186,
       "excluded_pattern_definition_file": "packages/secure-base/src/secure_base/detectors.py",
-      "lines_scanned": 15388,
-      "lines_scanned_production": 9934,
+      "lines_scanned": 16832,
+      "lines_scanned_production": 10815,
       "findings_production": 0,
       "findings_production_by_type": {},
-      "findings_in_tests": 45,
+      "findings_in_tests": 47,
       "findings_tests_by_type": {
-        "github_token": 18,
+        "github_token": 19,
+        "bearer": 2,
         "email": 7,
         "aws_access_key": 1,
         "private_key": 1,
         "url_userinfo": 1,
-        "bearer": 1,
         "phone": 14,
         "credit_card": 1,
         "ipv4": 1
@@ -347,16 +347,16 @@
           "text": "assert \"ghp_abcdefghijklmnopqrstuvwxyz123456\" not in user"
         },
         {
-          "file": "test_ci_pack.py",
-          "line": 60,
+          "file": "test_app.py",
+          "line": 20,
           "type": "github_token",
-          "text": "f.write_text(\"token = 'ghp_AbCdEfGhIjKlMnOpQrStUvWxYz123456'\\n\")"
+          "text": "TOKEN = \"ghp_AbCdEfGhIjKlMnOpQrStUvWxYz123456\""
         },
         {
-          "file": "test_secure_base.py",
-          "line": 6,
-          "type": "email",
-          "text": "SAMPLE = \"\"\"prueba con persona@ejemplo.com y también conta@otra.co"
+          "file": "test_auth_base.py",
+          "line": 213,
+          "type": "bearer",
+          "text": "for cabecera in (\"Basic abc\", \"Bearer\", \"Bearer 000000000000.nada\", f\"bearer {_t"
         }
       ],
       "hard_negative_flagged": {},
@@ -453,14 +453,14 @@
     "evidence_self_audit": {
       "name": "evidence_self_audit",
       "clause": "cada 0 de la página dice si es un costo medido o un dato ausente, y ninguna fila usa el precio de un modelo que la tabla de precios no conoce",
-      "consumers_in_page": 21,
-      "manifests_on_disk": 21,
-      "filas_con_datos_de_llamada": 21,
-      "filas_totales": 21,
+      "consumers_in_page": 22,
+      "manifests_on_disk": 22,
+      "filas_con_datos_de_llamada": 22,
+      "filas_totales": 22,
       "calls_spans": 0,
-      "calls_cassette": 67,
-      "tokens_in": 614932,
-      "tokens_out": 15297,
+      "calls_cassette": 70,
+      "tokens_in": 663085,
+      "tokens_out": 16009,
       "filas_con_costo_desconocido": [],
       "celdas_sin_procedencia": 0,
       "cero_sin_explicacion": false,
@@ -470,21 +470,21 @@
     "docs_claims": {
       "name": "docs_claims_executable",
       "clause": "toda cifra de contrato citada en un README coincide con el código o el disco",
-      "readmes": 21,
+      "readmes": 22,
       "cifras_por_categoria": {
-        "identificador": 57,
-        "cronologia": 56,
+        "identificador": 62,
+        "cronologia": 58,
+        "http": 22,
         "contrato": 20,
-        "referencia": 15,
-        "http": 15,
+        "referencia": 16,
         "puerto": 14,
-        "fecha": 9
+        "fecha": 12
       },
       "claims_de_contrato": 20,
       "claims_verificados": 20,
       "claims_falsos": [],
       "campos_span_en_codigo": 20,
-      "adrs_en_disco": 13,
+      "adrs_en_disco": 14,
       "nota": "solo 'contrato' exige verificación; puerto, código HTTP, configuración, cronología, fecha y ejemplo se excluyen del criterio por no ser afirmaciones sobre el comportamiento"
     }
   }

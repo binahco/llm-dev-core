@@ -42,6 +42,7 @@ CONSUMERS = [
     "release-walker",
     "prompt-twins",
     "doc-oracle",
+    "key-gate",
 ]
 
 
